@@ -1,4 +1,5 @@
-﻿using FluentNoSqlMigrator.Scope;
+﻿using FluentNoSqlMigrator.Collection;
+using FluentNoSqlMigrator.Scope;
 
 namespace FluentNoSqlMigrator.Infrastructure;
 
@@ -14,5 +15,10 @@ public class CreateBuilder
     public IScopeSettingsBuild Scope(string name)
     {
         return new ScopeBuild(name, _context);
+    }
+
+    public ICollectionSettingsBuild Collection(string collectionName)
+    {
+        return new CollectionBuild(collectionName, _context);
     }
 }

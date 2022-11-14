@@ -1,24 +1,35 @@
 ﻿using Couchbase;
+using FluentNoSqlMigrator.Collection;
 using FluentNoSqlMigrator.Infrastructure;
 
 namespace FluentNoSqlMigrator.Scope;
 
 public interface IScopeSettingsBuild
 {
-    // no settings yet, this is just the stateful pattern
-    // to follow for other builders (or should the need arise)
+    IScopeSettingsBuild WithCollection(string collectionName);
 }
 
 internal class ScopeBuild : IScopeSettingsBuild
 {
-    private readonly string _name;
+    private readonly string _scopeName;
     private readonly MigrationContext _context;
+    private List<string> _collections;
+    private readonly Guid _guid;
 
-    public ScopeBuild(string name, MigrationContext context)
+    public ScopeBuild(string scopeName, MigrationContext context)
     {
-        _name = name;
+        _scopeName = scopeName;
         _context = context;
-        _context.AddCommand(new BuildScopeCommand() { Name = _name});
+        _guid = Guid.NewGuid();
+        _context.SetCommand(_guid, new BuildScopeCommand() { ScopeName = _scopeName});
+        _collections = new List<string>();
+    }
+
+    public IScopeSettingsBuild WithCollection(string collectionName)
+    {
+        _collections.Add(collectionName);
+        _context.SetCommand(Guid.NewGuid(), new BuildCollectionCommand( _scopeName,collectionName));
+        return this;
     }
 }
 
@@ -27,9 +38,9 @@ internal class BuildScopeCommand : IMigrateCommand
     public async Task Execute(IBucket bucket)
     {
         var coll = bucket.Collections;
-        await coll.CreateScopeAsync(Name);
+        await coll.CreateScopeAsync(ScopeName);
         return;
     }
 
-    public string Name { get; set; }
+    public string ScopeName { get; set; }
 }

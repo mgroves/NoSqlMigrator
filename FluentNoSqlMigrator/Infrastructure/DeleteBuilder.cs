@@ -1,4 +1,5 @@
-﻿using FluentNoSqlMigrator.Scope;
+﻿using FluentNoSqlMigrator.Collection;
+using FluentNoSqlMigrator.Scope;
 
 namespace FluentNoSqlMigrator.Infrastructure;
 
@@ -11,8 +12,13 @@ public class DeleteBuilder
         _context = context;
     }
 
-    public IScopeSettingsDelete Scope(string name)
+    public IScopeSettingsDelete Scope(string scopeName)
     {
-        return new ScopeDelete(name, _context);
+        return new ScopeDelete(scopeName, _context);
+    }
+
+    public ICollectionSettingsDelete Collection(string collectionName)
+    {
+        return new CollectionDelete(collectionName, _context);
     }
 }

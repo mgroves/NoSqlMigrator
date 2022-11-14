@@ -9,17 +9,28 @@ namespace FluentNoSqlMigrator.Runner;
 public class MigrationRunner
 {
     private RunSettings _settings;
+    private Assembly _assembly;
 
     public async Task Run(Assembly assembly, RunSettings settings)
     {
         _settings = settings;
+        _assembly = assembly;
 
+        if (_settings.Direction == DirectionEnum.Up)
+            await RunUp();
+        else
+            await RunDown();
+    }
+
+    private async Task RunUp()
+    {
         // get all the migrations, ordered by attribute
-        var migrations = assembly.GetTypes()
+        // TODO: detect if there's a missing attribute and produce an appropriate error message
+        var migrations = _assembly.GetTypes()
             .Where(t => t.IsSubclassOf(typeof(Migrate)))
-            .OrderBy(t => ((Migration)Attribute.GetCustomAttribute(t,typeof(Migration))).MigrationNumber)
+            .OrderBy(t => ((Migration)Attribute.GetCustomAttribute(t, typeof(Migration))).MigrationNumber)
             .ToList();
-        
+
         // instantiate each one and run up on down on it
         foreach (var migrate in migrations)
         {
@@ -35,12 +46,64 @@ public class MigrationRunner
             migration.Up();
 
             // execute the commands
-            await context.RunCommands(settings.Bucket);
-            
-            // keep a record of successful migration
+            await context.RunCommands(_settings.Bucket);
+
+            // for UP: keep a record of successful migration
             await AddMigrationToHistory(migrationNumber);
         }
-        
+    }
+
+    private async Task RunDown()
+    {
+        // get all the migrations, ordered by attribute DESCENDING
+        // TODO: detect if there's a missing attribute and produce an appropriate error message
+        var migrations = _assembly.GetTypes()
+            .Where(t => t.IsSubclassOf(typeof(Migrate)))
+            .OrderByDescending(t => ((Migration)Attribute.GetCustomAttribute(t, typeof(Migration))).MigrationNumber)
+            .ToList();
+
+        // instantiate each one and run up on down on it
+        foreach (var migrate in migrations)
+        {
+            // has this already been run?
+            var migrationNumber = ((Migration)Attribute.GetCustomAttribute(migrate, typeof(Migration))).MigrationNumber;
+            var alreadyRun = await IsMigrationAlreadyRun(migrationNumber);
+            if (!alreadyRun)
+                continue;
+
+            // run everything in context
+            var context = new MigrationContext();
+            var migration = Activator.CreateInstance(migrate) as Migrate;
+            migration.Context = context;
+            migration.Down();
+
+            // execute the commands
+            await context.RunCommands(_settings.Bucket);
+
+            // for UP: keep a record of successful migration
+            await RollbackMigrationFromHistory(migrationNumber);
+        }
+    }
+
+    private async Task RollbackMigrationFromHistory(int migrationNumber)
+    {
+        var collection = await _settings.Bucket.CollectionAsync("_default");
+        try
+        {
+            // get the doc
+            var doc = await collection.GetAsync("FluentMigrationHistory");
+            var fluentMigrationHistory = doc.ContentAs<FluentMigrationHistory>();
+
+            // remove the number from history
+            fluentMigrationHistory?.History.Remove(migrationNumber);
+
+            // save the doc (replace the whole thing, since there's no subdoc operation to remove from an array
+            await collection.ReplaceAsync("FluentMigrationHistory", fluentMigrationHistory);
+        }
+        catch (DocumentNotFoundException)
+        {
+            // if there's no doc, that's fine
+        }
     }
 
     private async Task AddMigrationToHistory(int migrationNumber)
@@ -73,6 +136,7 @@ public class MigrationRunner
         {
             return false;
         }
+
     }
 }
 
@@ -85,6 +149,12 @@ public class RunSettings
 {
     public DirectionEnum Direction { get; set; }
     public IBucket Bucket { get; set; }
+    /// <summary>
+    /// Limit is the HIGHEST that the migration will run UP to
+    /// Or the LOWEST that the migration will run DOWN to
+    /// If it's not set, ALL migrations will be run
+    /// </summary>
+    public int? Limit { get; set; }
 }
 
 public enum DirectionEnum

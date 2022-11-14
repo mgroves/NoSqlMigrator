@@ -10,4 +10,8 @@
       <PackageReference Include="CouchbaseNetClient" Version="3.3.6" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Collection\" />
+    </ItemGroup>
+
 </Project>

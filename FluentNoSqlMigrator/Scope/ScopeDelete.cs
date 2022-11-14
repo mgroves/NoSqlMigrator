@@ -14,12 +14,14 @@ public class ScopeDelete : IScopeSettingsDelete
 {
     private readonly string _name;
     private readonly MigrationContext _context;
+    private readonly Guid _guid;
 
     public ScopeDelete(string name, MigrationContext context)
     {
         _name = name;
         _context = context;
-        _context.AddCommand(new DeleteScopeCommand() { Name = _name});
+        _guid = Guid.NewGuid();
+        _context.SetCommand(_guid, new DeleteScopeCommand() { Name = _name });
     }
 }
 
