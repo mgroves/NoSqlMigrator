@@ -44,7 +44,12 @@ public class TestMigration_3 : Migrate
             .OnCollection("myCollection1")
             .OnField("foo1").Ascending()
             .OnField("foo2").Descending()
-            .OnFieldRaw("ALL ARRAY FLATTEN_KEYS(s.day DESC, s.flight) FOR s IN schedule END");
+            .OnFieldRaw("ALL ARRAY FLATTEN_KEYS(s.day DESC, s.flight) FOR s IN schedule END")
+            .Where("geo.alt > 1000")
+            .UsingGsi()
+            .WithNodes("127.0.0.1:8091")
+            .WithDeferBuild()
+            .WithNumReplicas(0);
     }
 
     public override void Down()
@@ -57,6 +62,28 @@ public class TestMigration_3 : Migrate
 
 [Migration(4)]
 public class TestMigration_4 : Migrate
+{
+    public override void Up()
+    {
+        Create.PrimaryIndex()
+            .OnScope("myScope")
+            .OnCollection("myCollection1")
+            .UsingGsi()
+            .WithNodes("127.0.0.1:8091")
+            .WithDeferBuild()
+            .WithNumReplicas(0);
+    }
+
+    public override void Down()
+    {
+        Delete.PrimaryIndex()
+            .FromScope("myScope")
+            .FromCollection("myCollection1");
+    }
+}
+
+[Migration(5)]
+public class TestMigration_5 : Migrate
 {
     public override void Up()
     {
@@ -74,5 +101,22 @@ public class TestMigration_4 : Migrate
             .Collection("myCollection2")
             .Document("doc1")
             .Document("doc2");
+    }
+}
+
+[Migration(6)]
+public class TestMigration_6 : Migrate
+{
+    public override void Up()
+    {
+        Execute.Script(@"
+            INSERT INTO `testmigrator`.`myScope`.`myCollection1` (KEY, VALUE)
+            VALUES (""doc3"", { ""foo"" : ""bar"", ""baz"":""qux""})");
+    }
+
+    public override void Down()
+    {
+        Execute.Script(@"
+            DELETE FROM `testmigrator`.`myScope`.`myCollection1` USE KEYS ""doc3"";");
     }
 }

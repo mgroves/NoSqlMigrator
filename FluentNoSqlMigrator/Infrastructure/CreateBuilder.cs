@@ -35,4 +35,14 @@ public class CreateBuilder
     {
         return new IndexBuild(indexName);
     }
+
+    /// <summary>
+    /// Create a new SQL++ primary index
+    /// </summary>
+    /// <param name="indexName">Index name (optional)</param>
+    /// <returns></returns>
+    public IPrimaryIndexBuild PrimaryIndex(string indexName = "")
+    {
+        return new PrimaryIndexBuild(indexName);
+    }
 }

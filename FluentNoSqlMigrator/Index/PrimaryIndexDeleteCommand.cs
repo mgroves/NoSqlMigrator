@@ -1,39 +1,37 @@
 ﻿using Couchbase;
+using Couchbase.KeyValue;
+using Couchbase.Management.Query;
 using FluentNoSqlMigrator.Infrastructure;
-using DropQueryIndexOptions = Couchbase.Management.Query.DropQueryIndexOptions;
 
 namespace FluentNoSqlMigrator.Index;
 
-public class DeleteIndexCommand : IMigrateCommand
+public class PrimaryIndexDeleteCommand : IMigrateCommand
 {
-    private readonly string _indexName;
     private readonly string _scopeName;
     private readonly string _collectionName;
+    private readonly string _indexName;
 
-    public DeleteIndexCommand(string indexName, string scopeName, string collectionName)
+    public PrimaryIndexDeleteCommand(string scopeName, string collectionName, string indexName)
     {
-        _indexName = indexName;
         _scopeName = scopeName;
         _collectionName = collectionName;
+        _indexName = indexName;
     }
 
     public async Task Execute(IBucket bucket)
     {
-        var ix = bucket.Cluster.QueryIndexes;
-        var opts = new DropQueryIndexOptions();
+        var coll = bucket.Cluster.QueryIndexes;
+        var opts = new DropPrimaryQueryIndexOptions();
+        if(!string.IsNullOrEmpty(_indexName))
+            opts.IndexName(_indexName);
         opts.ScopeName(_scopeName);
         opts.CollectionName(_collectionName);
-        await ix.DropIndexAsync(bucket.Name, _indexName, opts);
+        await coll.DropPrimaryIndexAsync(bucket.Name, opts);
     }
 
     public bool IsValid(List<string> errorMessages)
     {
         var isValid = true;
-        if (string.IsNullOrEmpty(_indexName))
-        {
-            errorMessages.Add("Index name must be specified.");
-            isValid = false;
-        }
 
         if (string.IsNullOrEmpty(_scopeName))
         {

@@ -26,6 +26,7 @@ public interface IInsertDocumentsBuild
 {
     /// <summary>
     /// Document to insert
+    /// Not designed for bulk import of data
     /// </summary>
     /// <param name="key">Document key (id)</param>
     /// <param name="document">Any C# object (will be serialized to JSON)</param>
@@ -34,6 +35,7 @@ public interface IInsertDocumentsBuild
     
     /// <summary>
     /// Document to insert
+    /// Not designed for bulk import of data
     /// </summary>
     /// <param name="key">Document key (id)</param>
     /// <param name="document">Any C# object (will be serialized to JSON)</param>

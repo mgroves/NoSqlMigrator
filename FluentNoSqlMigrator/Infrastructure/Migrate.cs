@@ -15,4 +15,7 @@ public abstract class Migrate
 
     private InsertBuilder _insert;
     protected InsertBuilder Insert => (_insert ??= new InsertBuilder());
+
+    private ExecuteBuilder _execute;
+    protected ExecuteBuilder Execute => (_execute ??= new ExecuteBuilder());
 }

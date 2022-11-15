@@ -38,6 +38,16 @@ public class DeleteBuilder
     }
 
     /// <summary>
+    /// Delete a primary index (from a scope and collection)
+    /// </summary>
+    /// <param name="indexName">Index name (optional)</param>
+    /// <returns></returns>
+    public IPrimaryIndexDelete PrimaryIndex(string indexName = "")
+    {
+        return new PrimaryIndexDelete(indexName);
+    }
+
+    /// <summary>
     /// Prepare to delete document(s)
     /// </summary>
     public IDocumentDelete From => new DeleteDocument();
