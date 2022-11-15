@@ -1,4 +1,5 @@
 ﻿using FluentNoSqlMigrator.Collection;
+using FluentNoSqlMigrator.Documents;
 using FluentNoSqlMigrator.Index;
 using FluentNoSqlMigrator.Scope;
 
@@ -35,4 +36,9 @@ public class DeleteBuilder
     {
         return new IndexDelete(indexName);
     }
+
+    /// <summary>
+    /// Prepare to delete document(s)
+    /// </summary>
+    public IDocumentDelete From => new DeleteDocument();
 }

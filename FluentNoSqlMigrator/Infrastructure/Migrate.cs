@@ -1,4 +1,4 @@
-﻿using FluentNoSqlMigrator.Insert;
+﻿using FluentNoSqlMigrator.Documents;
 
 namespace FluentNoSqlMigrator.Infrastructure;
 

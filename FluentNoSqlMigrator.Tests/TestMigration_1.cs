@@ -69,6 +69,10 @@ public class TestMigration_4 : Migrate
 
     public override void Down()
     {
-        throw new NotImplementedException();
+        Delete.From
+            .Scope("myScope")
+            .Collection("myCollection2")
+            .Document("doc1")
+            .Document("doc2");
     }
 }

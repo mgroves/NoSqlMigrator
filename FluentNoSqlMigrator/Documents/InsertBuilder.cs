@@ -1,20 +1,43 @@
 ﻿using FluentNoSqlMigrator.Infrastructure;
 
-namespace FluentNoSqlMigrator.Insert;
+namespace FluentNoSqlMigrator.Documents;
 
 public interface IInsertDocumentsScopeSettings
 {
+    /// <summary>
+    /// The scope to insert document(s) into (required)
+    /// </summary>
+    /// <param name="scopeName">Scope name</param>
+    /// <returns></returns>
     IInsertDocumentsCollectionSettings Scope(string scopeName);
 }
 
 public interface IInsertDocumentsCollectionSettings
 {
+    /// <summary>
+    /// The collection to insert document(s) into (required)
+    /// </summary>
+    /// <param name="collectionName">Collection name</param>
+    /// <returns></returns>
     IInsertDocumentsBuild Collection(string collectionName);
 }
 
 public interface IInsertDocumentsBuild
 {
+    /// <summary>
+    /// Document to insert
+    /// </summary>
+    /// <param name="key">Document key (id)</param>
+    /// <param name="document">Any C# object (will be serialized to JSON)</param>
+    /// <returns></returns>
     IInsertDocumentsBuild Document(string key, dynamic document);
+    
+    /// <summary>
+    /// Document to insert
+    /// </summary>
+    /// <param name="key">Document key (id)</param>
+    /// <param name="document">Any C# object (will be serialized to JSON)</param>
+    /// <returns></returns>    
     IInsertDocumentsBuild Document<T>(string key, T document);
 }
 
@@ -24,6 +47,9 @@ public class InsertBuilder: IInsertDocumentsScopeSettings, IInsertDocumentsColle
     private Dictionary<string, object> _documents;
     private string _scopeName;
 
+    /// <summary>
+    /// Prepare to insert documents into a scope/collection
+    /// </summary>
     public IInsertDocumentsScopeSettings Into
     {
         get

@@ -1,7 +1,7 @@
 ﻿using Couchbase;
 using FluentNoSqlMigrator.Infrastructure;
 
-namespace FluentNoSqlMigrator.Insert;
+namespace FluentNoSqlMigrator.Documents;
 
 public class BuildDocumentsCommand : IMigrateCommand
 {
