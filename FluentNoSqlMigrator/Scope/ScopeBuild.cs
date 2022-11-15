@@ -1,5 +1,4 @@
-﻿using Couchbase;
-using FluentNoSqlMigrator.Collection;
+﻿using FluentNoSqlMigrator.Collection;
 using FluentNoSqlMigrator.Infrastructure;
 
 namespace FluentNoSqlMigrator.Scope;
@@ -9,38 +8,31 @@ public interface IScopeSettingsBuild
     IScopeSettingsBuild WithCollection(string collectionName);
 }
 
-internal class ScopeBuild : IScopeSettingsBuild
+internal class ScopeBuild : IScopeSettingsBuild, IBuildCommands
 {
     private readonly string _scopeName;
-    private readonly MigrationContext _context;
-    private List<string> _collections;
-    private readonly Guid _guid;
+    private readonly List<string> _collections;
 
-    public ScopeBuild(string scopeName, MigrationContext context)
+    public ScopeBuild(string scopeName)
     {
         _scopeName = scopeName;
-        _context = context;
-        _guid = Guid.NewGuid();
-        _context.SetCommand(_guid, new BuildScopeCommand() { ScopeName = _scopeName});
         _collections = new List<string>();
+        MigrationContext.AddCommands(BuildCommands);
     }
 
     public IScopeSettingsBuild WithCollection(string collectionName)
     {
         _collections.Add(collectionName);
-        _context.SetCommand(Guid.NewGuid(), new BuildCollectionCommand( _scopeName,collectionName));
         return this;
     }
-}
 
-internal class BuildScopeCommand : IMigrateCommand
-{
-    public async Task Execute(IBucket bucket)
+    public List<IMigrateCommand> BuildCommands()
     {
-        var coll = bucket.Collections;
-        await coll.CreateScopeAsync(ScopeName);
-        return;
+        var commands = new List<IMigrateCommand>
+        {
+            new BuildScopeCommand() { ScopeName = _scopeName },
+        };
+        _collections.ForEach(c => commands.Add(new BuildCollectionCommand( _scopeName,c)));
+        return commands;
     }
-
-    public string ScopeName { get; set; }
 }

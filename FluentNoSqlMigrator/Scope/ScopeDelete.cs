@@ -1,5 +1,4 @@
-﻿using Couchbase;
-using FluentNoSqlMigrator.Infrastructure;
+﻿using FluentNoSqlMigrator.Infrastructure;
 
 namespace FluentNoSqlMigrator.Scope;
 
@@ -10,28 +9,21 @@ public interface IScopeSettingsDelete
     // into another state
 }
 
-public class ScopeDelete : IScopeSettingsDelete
+public class ScopeDelete : IScopeSettingsDelete, IBuildCommands
 {
     private readonly string _name;
-    private readonly MigrationContext _context;
-    private readonly Guid _guid;
 
-    public ScopeDelete(string name, MigrationContext context)
+    public ScopeDelete(string name)
     {
         _name = name;
-        _context = context;
-        _guid = Guid.NewGuid();
-        _context.SetCommand(_guid, new DeleteScopeCommand() { Name = _name });
+        MigrationContext.AddCommands(BuildCommands);
     }
-}
 
-public class DeleteScopeCommand : IMigrateCommand
-{
-    public async Task Execute(IBucket bucket)
+    public List<IMigrateCommand> BuildCommands()
     {
-        var coll = bucket.Collections;
-        await coll.DropScopeAsync(Name);
+        return new List<IMigrateCommand>
+        {
+            new DeleteScopeCommand() { Name = _name }
+        };
     }
-
-    public string Name { get; set; }
 }

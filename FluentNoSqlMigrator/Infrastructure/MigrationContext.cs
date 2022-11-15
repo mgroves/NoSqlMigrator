@@ -2,29 +2,30 @@
 
 namespace FluentNoSqlMigrator.Infrastructure;
 
-public class MigrationContext
+public static class MigrationContext
 {
-    private readonly Dictionary<Guid, IMigrateCommand> _commands;
+    private static List<Func<List<IMigrateCommand>>> _commands = new List<Func<List<IMigrateCommand>>>();
 
-    public MigrationContext()
-    {
-        _commands = new Dictionary<Guid, IMigrateCommand>();
-    }
-    
-    public async Task RunCommands(IBucket bucket)
+    public static async Task RunCommands(IBucket bucket)
     {
         foreach (var command in _commands)
         {
-            await command.Value.Execute(bucket);
+            var actions = command();
+            foreach (var action in actions)
+            {
+                await action.Execute(bucket);
+            }
         }
     }
 
-    public void SetCommand(Guid guid, IMigrateCommand command)
+    public static void AddCommands(Func<List<IMigrateCommand>> buildCommands)
     {
-        if (_commands.ContainsKey(guid))
-            _commands[guid] = command;
-        else
-            _commands.Add(guid, command);
+        _commands.Add(buildCommands);
+    }
+
+    public static void Clear()
+    {
+        _commands = new List<Func<List<IMigrateCommand>>>();
     }
 }
 

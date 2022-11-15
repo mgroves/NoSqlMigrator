@@ -1,24 +1,23 @@
 ﻿using FluentNoSqlMigrator.Collection;
+using FluentNoSqlMigrator.Index;
 using FluentNoSqlMigrator.Scope;
 
 namespace FluentNoSqlMigrator.Infrastructure;
 
 public class CreateBuilder
 {
-    private readonly MigrationContext _context;
-
-    internal CreateBuilder(MigrationContext context)
-    {
-        _context = context;
-    }
-
     public IScopeSettingsBuild Scope(string name)
     {
-        return new ScopeBuild(name, _context);
+        return new ScopeBuild(name);
     }
 
     public ICollectionSettingsBuild Collection(string collectionName)
     {
-        return new CollectionBuild(collectionName, _context);
+        return new CollectionBuild(collectionName);
+    }
+
+    public IIndexBuild Index(string indexName)
+    {
+        return new IndexBuild(indexName);
     }
 }

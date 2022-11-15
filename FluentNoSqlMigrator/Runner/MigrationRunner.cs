@@ -39,17 +39,18 @@ public class MigrationRunner
             if (await IsMigrationAlreadyRun(migrationNumber))
                 continue;
 
-            // run everything in context
-            var context = new MigrationContext();
+            // run everything, it will put commands into MigrationContext
             var migration = Activator.CreateInstance(migrate) as Migrate;
-            migration.Context = context;
             migration.Up();
 
             // execute the commands
-            await context.RunCommands(_settings.Bucket);
+            await MigrationContext.RunCommands(_settings.Bucket);
 
             // for UP: keep a record of successful migration
             await AddMigrationToHistory(migrationNumber);
+
+            // clear context for next migration
+            MigrationContext.Clear();
         }
     }
 
@@ -72,16 +73,16 @@ public class MigrationRunner
                 continue;
 
             // run everything in context
-            var context = new MigrationContext();
             var migration = Activator.CreateInstance(migrate) as Migrate;
-            migration.Context = context;
             migration.Down();
 
             // execute the commands
-            await context.RunCommands(_settings.Bucket);
+            await MigrationContext.RunCommands(_settings.Bucket);
 
             // for UP: keep a record of successful migration
             await RollbackMigrationFromHistory(migrationNumber);
+            
+            MigrationContext.Clear();
         }
     }
 

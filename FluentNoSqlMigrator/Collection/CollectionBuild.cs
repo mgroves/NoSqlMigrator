@@ -1,6 +1,4 @@
-﻿using Couchbase;
-using Couchbase.Management.Collections;
-using FluentNoSqlMigrator.Infrastructure;
+﻿using FluentNoSqlMigrator.Infrastructure;
 
 namespace FluentNoSqlMigrator.Collection;
 
@@ -9,43 +7,32 @@ public interface ICollectionSettingsBuild
     ICollectionSettingsBuild InScope(string scopeName);
 }
 
-internal class CollectionBuild : ICollectionSettingsBuild
+internal class CollectionBuild : ICollectionSettingsBuild, IBuildCommands
 {
     private readonly string _collectionName;
-    private readonly MigrationContext _context;
     private string _scopeName;
-    private readonly Guid _guid;
 
-    public CollectionBuild(string collectionName, MigrationContext context)
+    public CollectionBuild(string collectionName)
     {
-        _guid = Guid.NewGuid();
         _collectionName = collectionName;
-        _context = context;
-        _context.SetCommand(_guid, new FluentSyntaxErrorCommand("You must specify the scope for this collection using InScope()"));
+        MigrationContext.AddCommands(BuildCommands);
     }
 
     public ICollectionSettingsBuild InScope(string scopeName)
     {
         _scopeName = scopeName;
-        _context.SetCommand(_guid, new BuildCollectionCommand(scopeName, _collectionName));
         return this;
     }
-}
 
-internal class BuildCollectionCommand : IMigrateCommand
-{
-    private readonly string _scopeName;
-    private readonly string _collectionName;
-
-    public BuildCollectionCommand(string scopeName, string collectionName)
+    public List<IMigrateCommand> BuildCommands()
     {
-        _scopeName = scopeName;
-        _collectionName = collectionName;
-    }
-
-    public async Task Execute(IBucket bucket)
-    {
-        var coll = bucket.Collections;
-        await coll.CreateCollectionAsync(new CollectionSpec(_scopeName, _collectionName));
+        if (string.IsNullOrEmpty(_collectionName))
+            throw new Exception("Collection name must be specified when creating a collection");
+        if (string.IsNullOrEmpty(_scopeName))
+            throw new Exception("Scope name must be specific when creating a collection");
+        return new List<IMigrateCommand>
+        {
+            new BuildCollectionCommand(_scopeName, _collectionName)
+        };
     }
 }

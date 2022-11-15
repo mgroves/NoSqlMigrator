@@ -32,3 +32,23 @@ public class TestMigration_2 : Migrate
             .FromScope("myScope");
     }
 }
+
+[Migration(3)]
+public class TestMigration_3 : Migrate
+{
+    public override void Up()
+    {
+        Create.Index("ix_myIndex")
+            .OnScope("myScope")
+            .OnCollection("myCollection1")
+            .OnField("foo1").Ascending()
+            .OnField("foo2").Descending();
+    }
+
+    public override void Down()
+    {
+        Delete.Index("ix_myIndex")
+            .InScope("myScope")
+            .InCollection("myCollection1");
+    }
+}
