@@ -1,4 +1,6 @@
-﻿namespace FluentNoSqlMigrator.Infrastructure;
+﻿using FluentNoSqlMigrator.Insert;
+
+namespace FluentNoSqlMigrator.Infrastructure;
 
 public abstract class Migrate
 {
@@ -10,4 +12,7 @@ public abstract class Migrate
 
     private DeleteBuilder _delete;
     protected DeleteBuilder Delete => (_delete ??= new DeleteBuilder());
+
+    private InsertBuilder _insert;
+    protected InsertBuilder Insert => (_insert ??= new InsertBuilder());
 }

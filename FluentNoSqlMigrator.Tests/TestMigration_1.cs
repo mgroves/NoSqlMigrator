@@ -1,4 +1,5 @@
-﻿using FluentNoSqlMigrator.Infrastructure;
+﻿using Couchbase.KeyValue;
+using FluentNoSqlMigrator.Infrastructure;
 
 namespace FluentNoSqlMigrator.Tests;
 
@@ -51,5 +52,23 @@ public class TestMigration_3 : Migrate
         Delete.Index("ix_myIndex")
             .FromScope("myScope")
             .FromCollection("myCollection1");
+    }
+}
+
+[Migration(4)]
+public class TestMigration_4 : Migrate
+{
+    public override void Up()
+    {
+        Insert.Into
+            .Scope("myScope")
+            .Collection("myCollection2")
+            .Document("doc1", new { foo = "bar", baz = "qux" })
+            .Document<DateTime>("doc2", DateTime.Now);
+    }
+
+    public override void Down()
+    {
+        throw new NotImplementedException();
     }
 }
