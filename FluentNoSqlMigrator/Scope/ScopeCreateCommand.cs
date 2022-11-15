@@ -7,7 +7,7 @@ internal class ScopeCreateCommand : IMigrateCommand
 {
     private readonly string _scopeName;
 
-    public ScopeCreateCommand(string scopeName)
+    internal ScopeCreateCommand(string scopeName)
     {
         _scopeName = scopeName;
     }

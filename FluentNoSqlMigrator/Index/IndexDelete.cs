@@ -27,13 +27,13 @@ public interface IIndexDeleteCollection
     
 }
 
-public class IndexDelete : IIndexDelete, IIndexDeleteScope, IIndexDeleteCollection, IBuildCommands
+internal class IndexDelete : IIndexDelete, IIndexDeleteScope, IIndexDeleteCollection, IBuildCommands
 {
     private readonly string _indexName;
     private string _scopeName;
     private string _collectionName;
 
-    public IndexDelete(string indexName)
+    internal IndexDelete(string indexName)
     {
         _indexName = indexName;
         MigrationContext.AddCommands(BuildCommands);

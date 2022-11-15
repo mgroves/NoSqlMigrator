@@ -18,7 +18,7 @@ internal class CollectionCreate : ICollectionCreateSettings, IBuildCommands
     private readonly string _collectionName;
     private string _scopeName;
 
-    public CollectionCreate(string collectionName)
+    internal CollectionCreate(string collectionName)
     {
         _collectionName = collectionName;
         MigrationContext.AddCommands(BuildCommands);

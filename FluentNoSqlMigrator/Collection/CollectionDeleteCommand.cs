@@ -9,7 +9,7 @@ internal class CollectionDeleteCommand : IMigrateCommand
     private readonly string _scopeName;
     private readonly string _collectionName;
 
-    public CollectionDeleteCommand(string scopeName, string collectionName)
+    internal CollectionDeleteCommand(string scopeName, string collectionName)
     {
         _scopeName = scopeName;
         _collectionName = collectionName;

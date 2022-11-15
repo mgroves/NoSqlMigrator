@@ -21,13 +21,13 @@ public interface IPrimaryIndexDeleteScope
     void FromCollection(string collectionName);
 }
 
-public class PrimaryIndexDelete : IPrimaryIndexDelete, IPrimaryIndexDeleteScope, IBuildCommands
+internal class PrimaryIndexDelete : IPrimaryIndexDelete, IPrimaryIndexDeleteScope, IBuildCommands
 {
     private readonly string _indexName;
     private string _scopeName;
     private string _collectionName;
 
-    public PrimaryIndexDelete(string indexName)
+    internal PrimaryIndexDelete(string indexName)
     {
         _indexName = indexName;
         MigrationContext.AddCommands(BuildCommands);

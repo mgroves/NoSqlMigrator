@@ -18,7 +18,7 @@ internal class ScopeCreate : IScopeCreateSettings, IBuildCommands
     private readonly string _scopeName;
     private readonly List<string> _collections;
 
-    public ScopeCreate(string scopeName)
+    internal ScopeCreate(string scopeName)
     {
         _scopeName = scopeName;
         _collections = new List<string>();

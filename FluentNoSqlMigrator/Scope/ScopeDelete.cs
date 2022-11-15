@@ -9,11 +9,11 @@ public interface IScopeSettingsDelete
     // into another state
 }
 
-public class ScopeDelete : IScopeSettingsDelete, IBuildCommands
+internal class ScopeDelete : IScopeSettingsDelete, IBuildCommands
 {
     private readonly string _scopeName;
 
-    public ScopeDelete(string scopeName)
+    internal ScopeDelete(string scopeName)
     {
         _scopeName = scopeName;
         MigrationContext.AddCommands(BuildCommands);

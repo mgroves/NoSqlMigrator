@@ -134,7 +134,7 @@ public interface IIndexCreateFieldSettings
 // TODO: USING GSI
 // TODO: with nodes
 // TODO: deferred
-public class IndexCreate : IIndexCreate, IIndexCreateScope, IIndexCreateCollection, IIndexCreateFieldSettings, IBuildCommands
+internal class IndexCreate : IIndexCreate, IIndexCreateScope, IIndexCreateCollection, IIndexCreateFieldSettings, IBuildCommands
 {
     private readonly string _indexName;
     private string _collectionName;
@@ -146,7 +146,7 @@ public class IndexCreate : IIndexCreate, IIndexCreateScope, IIndexCreateCollecti
     private bool _deferBuild;
     private int? _numReplicas;
 
-    public IndexCreate(string indexName)
+    internal IndexCreate(string indexName)
     {
         _indexName = indexName;
         _fields = new List<BuildIndexCommandField>();

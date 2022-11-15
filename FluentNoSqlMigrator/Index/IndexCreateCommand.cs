@@ -4,7 +4,7 @@ using FluentNoSqlMigrator.Infrastructure;
 
 namespace FluentNoSqlMigrator.Index;
 
-public class BuildIndexCommandField
+internal class BuildIndexCommandField
 {
     private readonly string _fieldName;
     private string _ascOrDesc;
@@ -25,7 +25,7 @@ public class BuildIndexCommandField
     }
 }
 
-public class IndexCreateCommand : IMigrateCommand
+internal class IndexCreateCommand : IMigrateCommand
 {
     private readonly string _indexName;
     private readonly string _scopeName;

@@ -112,7 +112,7 @@ public interface IPrimaryIndexCreateCollection
 // TODO: USING GSI
 // TODO: with nodes
 // TODO: deferred
-public class PrimaryIndexCreate : IPrimaryIndexCreate, IPrimaryIndexCreateScope, IPrimaryIndexCreateCollection, IBuildCommands
+internal class PrimaryIndexCreate : IPrimaryIndexCreate, IPrimaryIndexCreateScope, IPrimaryIndexCreateCollection, IBuildCommands
 {
     private readonly string _indexName;
     private string _collectionName;
@@ -122,7 +122,7 @@ public class PrimaryIndexCreate : IPrimaryIndexCreate, IPrimaryIndexCreateScope,
     private bool _deferBuild;
     private uint? _numReplicas;
 
-    public PrimaryIndexCreate(string indexName)
+    internal PrimaryIndexCreate(string indexName)
     {
         _indexName = indexName;
         _withNodes = new List<string>();

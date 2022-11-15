@@ -7,11 +7,11 @@ public interface IScriptBuild
     
 }
 
-public class ScriptRun : IScriptBuild, IBuildCommands
+internal class ScriptRun : IScriptBuild, IBuildCommands
 {
     private readonly string _sql;
 
-    public ScriptRun(string sql)
+    internal ScriptRun(string sql)
     {
         _sql = sql;
         MigrationContext.AddCommands(BuildCommands);

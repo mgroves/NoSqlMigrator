@@ -32,7 +32,7 @@ public interface IDocumentDeleteCollection
     IDocumentDeleteCollection Document(string key);
 }
 
-public class DocumentDelete : IDocumentDelete, IDocumentDeleteScope, IDocumentDeleteCollection, IBuildCommands
+internal class DocumentDelete : IDocumentDelete, IDocumentDeleteScope, IDocumentDeleteCollection, IBuildCommands
 {
     private string _scopeName;
     private string _collectionName;

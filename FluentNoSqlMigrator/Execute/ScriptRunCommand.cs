@@ -3,11 +3,11 @@ using FluentNoSqlMigrator.Infrastructure;
 
 namespace FluentNoSqlMigrator.Execute;
 
-public class ScriptRunCommand : IMigrateCommand
+internal class ScriptRunCommand : IMigrateCommand
 {
     private readonly string _sql;
 
-    public ScriptRunCommand(string sql)
+    internal ScriptRunCommand(string sql)
     {
         _sql = sql;
     }

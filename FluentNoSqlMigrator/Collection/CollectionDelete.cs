@@ -18,7 +18,7 @@ internal class CollectionDelete : ICollectionSettingsDelete, IBuildCommands
     private readonly string _collectionName;
     private string _scopeName;
 
-    public CollectionDelete(string collectionName)
+    internal CollectionDelete(string collectionName)
     {
         _collectionName = collectionName;
         MigrationContext.AddCommands(BuildCommands);

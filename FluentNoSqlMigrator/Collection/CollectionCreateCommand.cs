@@ -9,7 +9,7 @@ internal class CollectionCreateCommand : IMigrateCommand
     private readonly string _scopeName;
     private readonly string _collectionName;
 
-    public CollectionCreateCommand(string scopeName, string collectionName)
+    internal CollectionCreateCommand(string scopeName, string collectionName)
     {
         _scopeName = scopeName;
         _collectionName = collectionName;

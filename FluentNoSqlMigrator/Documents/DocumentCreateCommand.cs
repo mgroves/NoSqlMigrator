@@ -3,7 +3,7 @@ using FluentNoSqlMigrator.Infrastructure;
 
 namespace FluentNoSqlMigrator.Documents;
 
-public class DocumentCreateCommand : IMigrateCommand
+internal class DocumentCreateCommand : IMigrateCommand
 {
     private readonly string _scopeName;
     private readonly string _collectionName;

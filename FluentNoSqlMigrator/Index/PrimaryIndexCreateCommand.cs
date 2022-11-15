@@ -5,7 +5,7 @@ using FluentNoSqlMigrator.Infrastructure;
 
 namespace FluentNoSqlMigrator.Index;
 
-public class PrimaryIndexCreateCommand : IMigrateCommand
+internal class PrimaryIndexCreateCommand : IMigrateCommand
 {
     private readonly string _indexName;
     private readonly string _scopeName;
@@ -15,7 +15,7 @@ public class PrimaryIndexCreateCommand : IMigrateCommand
     private readonly bool _deferBuild;
     private readonly uint? _numReplicas;
 
-    public PrimaryIndexCreateCommand(string indexName, string scopeName, string collectionName, bool useGsi, List<string> withNodes, bool deferBuild, uint? numReplicas)
+    internal PrimaryIndexCreateCommand(string indexName, string scopeName, string collectionName, bool useGsi, List<string> withNodes, bool deferBuild, uint? numReplicas)
     {
         _indexName = indexName;
         _scopeName = scopeName;

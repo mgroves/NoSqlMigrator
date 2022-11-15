@@ -5,13 +5,13 @@ using FluentNoSqlMigrator.Infrastructure;
 
 namespace FluentNoSqlMigrator.Index;
 
-public class PrimaryIndexDeleteCommand : IMigrateCommand
+internal class PrimaryIndexDeleteCommand : IMigrateCommand
 {
     private readonly string _scopeName;
     private readonly string _collectionName;
     private readonly string _indexName;
 
-    public PrimaryIndexDeleteCommand(string scopeName, string collectionName, string indexName)
+    internal PrimaryIndexDeleteCommand(string scopeName, string collectionName, string indexName)
     {
         _scopeName = scopeName;
         _collectionName = collectionName;

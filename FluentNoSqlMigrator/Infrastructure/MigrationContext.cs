@@ -2,7 +2,7 @@
 
 namespace FluentNoSqlMigrator.Infrastructure;
 
-public static class MigrationContext
+internal static class MigrationContext
 {
     private static List<Func<List<IMigrateCommand>>> _commands = new List<Func<List<IMigrateCommand>>>();
     private static string _migrationName = "Migration runner has not started";
