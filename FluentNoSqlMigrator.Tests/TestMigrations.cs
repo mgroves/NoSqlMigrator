@@ -109,14 +109,14 @@ public class TestMigration_6 : Migrate
 {
     public override void Up()
     {
-        Execute.Script(@"
+        Execute.Sql(@"
             INSERT INTO `testmigrator`.`myScope`.`myCollection1` (KEY, VALUE)
             VALUES (""doc3"", { ""foo"" : ""bar"", ""baz"":""qux""})");
     }
 
     public override void Down()
     {
-        Execute.Script(@"
+        Execute.Sql(@"
             DELETE FROM `testmigrator`.`myScope`.`myCollection1` USE KEYS ""doc3"";");
     }
 }

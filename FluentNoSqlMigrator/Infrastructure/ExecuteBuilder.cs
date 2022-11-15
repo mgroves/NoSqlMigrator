@@ -9,7 +9,7 @@ public class ExecuteBuilder
     /// </summary>
     /// <param name="sql">SQL++ script</param>
     /// <returns></returns>
-    public IScriptBuild Script(string sql)
+    public IScriptBuild Sql(string sql)
     {
         return new ScriptRun(sql);
     }
