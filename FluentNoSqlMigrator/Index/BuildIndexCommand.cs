@@ -48,6 +48,12 @@ public class BuildIndexCommand : IMigrateCommand
             isValid = false;
         }
 
+        if (!_fields.Any())
+        {
+            errorMessages.Add("At least one field is required for an index.");
+            isValid = false;
+        }
+
         return isValid;
     }
 

@@ -5,6 +5,11 @@ namespace FluentNoSqlMigrator.Scope;
 
 public interface IScopeSettingsBuild
 {
+    /// <summary>
+    /// Create collection(s) within the new scope
+    /// </summary>
+    /// <param name="collectionName">Collection name</param>
+    /// <returns></returns>
     IScopeSettingsBuild WithCollection(string collectionName);
 }
 

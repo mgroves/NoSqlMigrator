@@ -4,12 +4,22 @@ namespace FluentNoSqlMigrator.Index;
 
 public interface IIndexDelete
 {
-    IIndexDeleteScope InScope(string scopeName);
+    /// <summary>
+    /// Scope to delete an index from (required)
+    /// </summary>
+    /// <param name="scopeName">Scope name</param>
+    /// <returns></returns>
+    IIndexDeleteScope FromScope(string scopeName);
 }
 
 public interface IIndexDeleteScope
 {
-    IIndexDeleteCollection InCollection(string collectionName);
+    /// <summary>
+    /// Collection to delete an index from (required)
+    /// </summary>
+    /// <param name="collectionName">Collection name</param>
+    /// <returns></returns>
+    IIndexDeleteCollection FromCollection(string collectionName);
 }
 
 public interface IIndexDeleteCollection
@@ -29,13 +39,13 @@ public class IndexDelete : IIndexDelete, IIndexDeleteScope, IIndexDeleteCollecti
         MigrationContext.AddCommands(BuildCommands);
     }
     
-    public IIndexDeleteScope InScope(string scopeName)
+    public IIndexDeleteScope FromScope(string scopeName)
     {
         _scopeName = scopeName;
         return this;
     }
 
-    public IIndexDeleteCollection InCollection(string collectionName)
+    public IIndexDeleteCollection FromCollection(string collectionName)
     {
         _collectionName = collectionName;
         return this;

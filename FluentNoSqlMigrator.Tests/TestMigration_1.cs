@@ -42,13 +42,14 @@ public class TestMigration_3 : Migrate
             .OnScope("myScope")
             .OnCollection("myCollection1")
             .OnField("foo1").Ascending()
-            .OnField("foo2").Descending();
+            .OnField("foo2").Descending()
+            .OnFieldRaw("ALL ARRAY FLATTEN_KEYS(s.day DESC, s.flight) FOR s IN schedule END");
     }
 
     public override void Down()
     {
         Delete.Index("ix_myIndex")
-            .InScope("myScope")
-            .InCollection("myCollection1");
+            .FromScope("myScope")
+            .FromCollection("myCollection1");
     }
 }

@@ -4,6 +4,12 @@ namespace FluentNoSqlMigrator.Collection;
 
 public interface ICollectionSettingsBuild
 {
+    /// <summary>
+    /// The scope to create the collection in (required).
+    /// Alternatively, use Create.Scope("...").WithCollection("...")
+    /// </summary>
+    /// <param name="scopeName">Scope Name</param>
+    /// <returns></returns>
     ICollectionSettingsBuild InScope(string scopeName);
 }
 

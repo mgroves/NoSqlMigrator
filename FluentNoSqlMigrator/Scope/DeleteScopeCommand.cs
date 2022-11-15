@@ -10,7 +10,6 @@ public class DeleteScopeCommand : IMigrateCommand
     public DeleteScopeCommand(string scopeName)
     {
         _scopeName = scopeName;
-        throw new NotImplementedException();
     }
 
     public async Task Execute(IBucket bucket)
