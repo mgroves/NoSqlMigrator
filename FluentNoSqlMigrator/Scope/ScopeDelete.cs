@@ -11,11 +11,11 @@ public interface IScopeSettingsDelete
 
 public class ScopeDelete : IScopeSettingsDelete, IBuildCommands
 {
-    private readonly string _name;
+    private readonly string _scopeName;
 
-    public ScopeDelete(string name)
+    public ScopeDelete(string scopeName)
     {
-        _name = name;
+        _scopeName = scopeName;
         MigrationContext.AddCommands(BuildCommands);
     }
 
@@ -23,7 +23,7 @@ public class ScopeDelete : IScopeSettingsDelete, IBuildCommands
     {
         return new List<IMigrateCommand>
         {
-            new DeleteScopeCommand() { Name = _name }
+            new DeleteScopeCommand(_scopeName)
         };
     }
 }

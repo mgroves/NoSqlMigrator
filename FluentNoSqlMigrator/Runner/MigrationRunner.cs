@@ -34,6 +34,8 @@ public class MigrationRunner
         // instantiate each one and run up on down on it
         foreach (var migrate in migrations)
         {
+            MigrationContext.SetMigrationName(migrate.FullName);
+            
             // has this already been run?
             var migrationNumber = ((Migration)Attribute.GetCustomAttribute(migrate, typeof(Migration))).MigrationNumber;
             if (await IsMigrationAlreadyRun(migrationNumber))

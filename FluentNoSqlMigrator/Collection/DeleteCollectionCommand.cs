@@ -20,4 +20,21 @@ internal class DeleteCollectionCommand : IMigrateCommand
         var coll = bucket.Collections;
         await coll.DropCollectionAsync(new CollectionSpec(_scopeName, _collectionName));
     }
+
+    public bool IsValid(List<string> errorMessages)
+    {
+        var isValid = true;
+        if (string.IsNullOrEmpty(_scopeName))
+        {
+            errorMessages.Add("Scope name must be specified when deleting a collection");
+            isValid = false;
+        }
+
+        if (string.IsNullOrEmpty(_collectionName))
+        {
+            errorMessages.Add("Collection name must be specified when deleting a collection");
+            isValid = false;
+        }
+        return isValid;
+    }
 }

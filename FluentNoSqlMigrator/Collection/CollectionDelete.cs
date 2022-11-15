@@ -26,10 +26,6 @@ internal class CollectionDelete : ICollectionSettingsDelete, IBuildCommands
 
     public List<IMigrateCommand> BuildCommands()
     {
-        if (string.IsNullOrEmpty(_scopeName))
-            throw new Exception("Scope name must be specified when deleting a collection");
-        if (string.IsNullOrEmpty(_collectionName))
-            throw new Exception("Collection name must be specified when deleting a collection");
         return new List<IMigrateCommand>
         {
             new DeleteCollectionCommand(_scopeName, _collectionName)

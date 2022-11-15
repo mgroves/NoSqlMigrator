@@ -30,7 +30,7 @@ internal class ScopeBuild : IScopeSettingsBuild, IBuildCommands
     {
         var commands = new List<IMigrateCommand>
         {
-            new BuildScopeCommand() { ScopeName = _scopeName },
+            new BuildScopeCommand(_scopeName),
         };
         _collections.ForEach(c => commands.Add(new BuildCollectionCommand( _scopeName,c)));
         return commands;

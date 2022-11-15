@@ -26,10 +26,6 @@ internal class CollectionBuild : ICollectionSettingsBuild, IBuildCommands
 
     public List<IMigrateCommand> BuildCommands()
     {
-        if (string.IsNullOrEmpty(_collectionName))
-            throw new Exception("Collection name must be specified when creating a collection");
-        if (string.IsNullOrEmpty(_scopeName))
-            throw new Exception("Scope name must be specific when creating a collection");
         return new List<IMigrateCommand>
         {
             new BuildCollectionCommand(_scopeName, _collectionName)

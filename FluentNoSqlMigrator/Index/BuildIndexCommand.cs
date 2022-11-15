@@ -1,24 +1,30 @@
-﻿using Couchbase;
+﻿using System.Text;
+using Couchbase;
 using FluentNoSqlMigrator.Infrastructure;
 
 namespace FluentNoSqlMigrator.Index;
 
-public class DeleteIndexCommand : IMigrateCommand
+public class BuildIndexCommand : IMigrateCommand
 {
     private readonly string _indexName;
     private readonly string _scopeName;
     private readonly string _collectionName;
+    private readonly Dictionary<string, string> _fields;
 
-    public DeleteIndexCommand(string indexName, string scopeName, string collectionName)
+    public BuildIndexCommand(string indexName, string scopeName, string collectionName, Dictionary<string,string> fields)
     {
         _indexName = indexName;
         _scopeName = scopeName;
         _collectionName = collectionName;
+        _fields = fields;
     }
+
 
     public async Task Execute(IBucket bucket)
     {
-        await bucket.Cluster.QueryAsync<dynamic>($"DROP INDEX `{_indexName}` ON `{bucket.Name}`.`{_scopeName}`.`{_collectionName}`");
+        var sqlIndex = $"CREATE INDEX `{_indexName}` ON `{bucket.Name}`.`{_scopeName}`.`{_collectionName}` ({GetFields()})";
+        var cluster = bucket.Cluster;
+        await cluster.QueryAsync<dynamic>(sqlIndex);
     }
 
     public bool IsValid(List<string> errorMessages)
@@ -43,5 +49,19 @@ public class DeleteIndexCommand : IMigrateCommand
         }
 
         return isValid;
+    }
+
+    private string GetFields()
+    {
+        var sb = new StringBuilder();
+        foreach (var field in _fields)
+        {
+            sb.Append($"`{field.Key}`");
+            if (!string.IsNullOrEmpty(field.Value))
+                sb.Append($" {field.Value}");
+            sb.Append(",");
+        }
+
+        return sb.ToString().Trim(',');
     }
 }
