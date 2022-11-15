@@ -1,5 +1,4 @@
-﻿using Couchbase;
-using FluentNoSqlMigrator.Infrastructure;
+﻿using FluentNoSqlMigrator.Infrastructure;
 
 namespace FluentNoSqlMigrator.Documents;
 
@@ -33,13 +32,13 @@ public interface IDocumentDeleteCollection
     IDocumentDeleteCollection Document(string key);
 }
 
-public class DeleteDocument : IDocumentDelete, IDocumentDeleteScope, IDocumentDeleteCollection, IBuildCommands
+public class DocumentDelete : IDocumentDelete, IDocumentDeleteScope, IDocumentDeleteCollection, IBuildCommands
 {
     private string _scopeName;
     private string _collectionName;
     private List<string> _keys;
 
-    internal DeleteDocument()
+    internal DocumentDelete()
     {
         _keys = new List<string>();
         MigrationContext.AddCommands(BuildCommands);
@@ -67,54 +66,7 @@ public class DeleteDocument : IDocumentDelete, IDocumentDeleteScope, IDocumentDe
     {
         return new List<IMigrateCommand>
         {
-            new DeleteDocumentsCommand(_scopeName, _collectionName, _keys)
+            new DocumentDeleteCommand(_scopeName, _collectionName, _keys)
         };
-    }
-}
-
-public class DeleteDocumentsCommand : IMigrateCommand
-{
-    private readonly string _scopeName;
-    private readonly string _collectionName;
-    private readonly List<string> _keys;
-
-    public DeleteDocumentsCommand(string scopeName, string collectionName, List<string> keys)
-    {
-        _scopeName = scopeName;
-        _collectionName = collectionName;
-        _keys = keys;
-    }
-
-    public async Task Execute(IBucket bucket)
-    {
-        var scope = await bucket.ScopeAsync(_scopeName);
-        var coll = await scope.CollectionAsync(_collectionName);
-        foreach (var key in _keys)
-        {
-            await coll.RemoveAsync(key);
-        }
-    }
-
-    public bool IsValid(List<string> errorMessages)
-    {
-        var isValid = true;
-        if (string.IsNullOrEmpty(_scopeName))
-        {
-            errorMessages.Add("Scope name must be specified");
-            isValid = false;
-        } 
-        if (string.IsNullOrEmpty(_collectionName))
-        {
-            errorMessages.Add("Collection name must be specified");
-            isValid = false;
-        }
-
-        if (!_keys.Any())
-        {
-            errorMessages.Add("At least one document key must be specified");
-            isValid = false;
-        }
-
-        return isValid;
     }
 }

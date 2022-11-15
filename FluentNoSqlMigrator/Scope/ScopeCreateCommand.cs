@@ -3,11 +3,11 @@ using FluentNoSqlMigrator.Infrastructure;
 
 namespace FluentNoSqlMigrator.Scope;
 
-internal class BuildScopeCommand : IMigrateCommand
+internal class ScopeCreateCommand : IMigrateCommand
 {
     private readonly string _scopeName;
 
-    public BuildScopeCommand(string scopeName)
+    public ScopeCreateCommand(string scopeName)
     {
         _scopeName = scopeName;
     }

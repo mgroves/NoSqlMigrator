@@ -43,7 +43,7 @@ public interface IInsertDocumentsBuild
     IInsertDocumentsBuild Document<T>(string key, T document);
 }
 
-public class InsertBuilder: IInsertDocumentsScopeSettings, IInsertDocumentsCollectionSettings, IInsertDocumentsBuild, IBuildCommands
+public class DocumentCreate: IInsertDocumentsScopeSettings, IInsertDocumentsCollectionSettings, IInsertDocumentsBuild, IBuildCommands
 {
     private string _collectionName;
     private Dictionary<string, object> _documents;
@@ -66,7 +66,7 @@ public class InsertBuilder: IInsertDocumentsScopeSettings, IInsertDocumentsColle
     {
         return new List<IMigrateCommand>
         {
-            new BuildDocumentsCommand(_scopeName, _collectionName, _documents)
+            new DocumentCreateCommand(_scopeName, _collectionName, _documents)
         };
     }
 

@@ -1,25 +1,50 @@
 ﻿using System.Text;
 using Couchbase;
-using Couchbase.Management.Query;
 using FluentNoSqlMigrator.Infrastructure;
 
 namespace FluentNoSqlMigrator.Index;
 
-public class BuildPrimaryIndexCommand : IMigrateCommand
+public class BuildIndexCommandField
+{
+    private readonly string _fieldName;
+    private string _ascOrDesc;
+    private readonly bool _isRaw;
+
+    public BuildIndexCommandField(string fieldName, string ascOrDesc, bool isRaw)
+    {
+        _fieldName = fieldName;
+        _ascOrDesc = ascOrDesc;
+        _isRaw = isRaw;
+    }
+
+    public string Value => _isRaw ? _fieldName : $"`{_fieldName}` {_ascOrDesc}";
+
+    public string AscOrDesc
+    {
+        set => _ascOrDesc = value;
+    }
+}
+
+public class IndexCreateCommand : IMigrateCommand
 {
     private readonly string _indexName;
     private readonly string _scopeName;
     private readonly string _collectionName;
+    private readonly List<BuildIndexCommandField> _fields;
+    private readonly string _whereClause;
     private readonly bool _useGsi;
     private readonly List<string> _withNodes;
     private readonly bool _deferBuild;
-    private readonly uint? _numReplicas;
+    private readonly int? _numReplicas;
 
-    public BuildPrimaryIndexCommand(string indexName, string scopeName, string collectionName, bool useGsi, List<string> withNodes, bool deferBuild, uint? numReplicas)
+    public IndexCreateCommand(string indexName, string scopeName, string collectionName,
+        List<BuildIndexCommandField> fields, string whereClause, bool useGsi, List<string> withNodes, bool deferBuild, int? numReplicas)
     {
         _indexName = indexName;
         _scopeName = scopeName;
         _collectionName = collectionName;
+        _fields = fields;
+        _whereClause = whereClause;
         _useGsi = useGsi;
         _withNodes = withNodes;
         _deferBuild = deferBuild;
@@ -28,12 +53,11 @@ public class BuildPrimaryIndexCommand : IMigrateCommand
 
     public async Task Execute(IBucket bucket)
     {
-        var sqlIndex = $"CREATE PRIMARY INDEX ";
-
-        if(!string.IsNullOrEmpty(_indexName))
-            sqlIndex += $"`{_indexName}`";
+        var sqlIndex = $"CREATE INDEX `{_indexName}` ON `{bucket.Name}`.`{_scopeName}`.`{_collectionName}` ({GetFields()})";
         
-        sqlIndex += $" ON `{bucket.Name}`.`{_scopeName}`.`{_collectionName}` ";
+        // WHERE clause is optional
+        if (!string.IsNullOrEmpty(_whereClause))
+            sqlIndex += $" WHERE {_whereClause} ";
         
         // USING GSI is optional
         if (_useGsi)
@@ -62,6 +86,11 @@ public class BuildPrimaryIndexCommand : IMigrateCommand
     public bool IsValid(List<string> errorMessages)
     {
         var isValid = true;
+        if (string.IsNullOrEmpty(_indexName))
+        {
+            errorMessages.Add("Index name must be specified.");
+            isValid = false;
+        }
 
         if (string.IsNullOrEmpty(_scopeName))
         {
@@ -75,6 +104,20 @@ public class BuildPrimaryIndexCommand : IMigrateCommand
             isValid = false;
         }
 
+        if (!_fields.Any())
+        {
+            errorMessages.Add("At least one field is required for an index.");
+            isValid = false;
+        }
+
         return isValid;
+    }
+
+    private string GetFields()
+    {
+        var sb = new StringBuilder();
+        foreach (var field in _fields)
+            sb.Append($"{field.Value},");
+        return sb.ToString().Trim(',');
     }
 }

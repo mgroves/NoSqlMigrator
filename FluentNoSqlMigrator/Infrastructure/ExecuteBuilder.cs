@@ -11,6 +11,6 @@ public class ExecuteBuilder
     /// <returns></returns>
     public IScriptBuild Script(string sql)
     {
-        return new ScriptBuild(sql);
+        return new ScriptRun(sql);
     }
 }

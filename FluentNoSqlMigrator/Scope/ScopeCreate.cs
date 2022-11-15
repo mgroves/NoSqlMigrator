@@ -3,29 +3,29 @@ using FluentNoSqlMigrator.Infrastructure;
 
 namespace FluentNoSqlMigrator.Scope;
 
-public interface IScopeSettingsBuild
+public interface IScopeCreateSettings
 {
     /// <summary>
     /// Create collection(s) within the new scope
     /// </summary>
     /// <param name="collectionName">Collection name</param>
     /// <returns></returns>
-    IScopeSettingsBuild WithCollection(string collectionName);
+    IScopeCreateSettings WithCollection(string collectionName);
 }
 
-internal class ScopeBuild : IScopeSettingsBuild, IBuildCommands
+internal class ScopeCreate : IScopeCreateSettings, IBuildCommands
 {
     private readonly string _scopeName;
     private readonly List<string> _collections;
 
-    public ScopeBuild(string scopeName)
+    public ScopeCreate(string scopeName)
     {
         _scopeName = scopeName;
         _collections = new List<string>();
         MigrationContext.AddCommands(BuildCommands);
     }
 
-    public IScopeSettingsBuild WithCollection(string collectionName)
+    public IScopeCreateSettings WithCollection(string collectionName)
     {
         _collections.Add(collectionName);
         return this;
@@ -35,9 +35,9 @@ internal class ScopeBuild : IScopeSettingsBuild, IBuildCommands
     {
         var commands = new List<IMigrateCommand>
         {
-            new BuildScopeCommand(_scopeName),
+            new ScopeCreateCommand(_scopeName),
         };
-        _collections.ForEach(c => commands.Add(new BuildCollectionCommand( _scopeName,c)));
+        _collections.ForEach(c => commands.Add(new CollectionCreateCommand( _scopeName,c)));
         return commands;
     }
 }

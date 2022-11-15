@@ -2,7 +2,7 @@
 
 namespace FluentNoSqlMigrator.Collection;
 
-public interface ICollectionSettingsBuild
+public interface ICollectionCreateSettings
 {
     /// <summary>
     /// The scope to create the collection in (required).
@@ -10,21 +10,21 @@ public interface ICollectionSettingsBuild
     /// </summary>
     /// <param name="scopeName">Scope Name</param>
     /// <returns></returns>
-    ICollectionSettingsBuild InScope(string scopeName);
+    ICollectionCreateSettings InScope(string scopeName);
 }
 
-internal class CollectionBuild : ICollectionSettingsBuild, IBuildCommands
+internal class CollectionCreate : ICollectionCreateSettings, IBuildCommands
 {
     private readonly string _collectionName;
     private string _scopeName;
 
-    public CollectionBuild(string collectionName)
+    public CollectionCreate(string collectionName)
     {
         _collectionName = collectionName;
         MigrationContext.AddCommands(BuildCommands);
     }
 
-    public ICollectionSettingsBuild InScope(string scopeName)
+    public ICollectionCreateSettings InScope(string scopeName)
     {
         _scopeName = scopeName;
         return this;
@@ -34,7 +34,7 @@ internal class CollectionBuild : ICollectionSettingsBuild, IBuildCommands
     {
         return new List<IMigrateCommand>
         {
-            new BuildCollectionCommand(_scopeName, _collectionName)
+            new CollectionCreateCommand(_scopeName, _collectionName)
         };
     }
 }

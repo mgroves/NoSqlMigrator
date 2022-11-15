@@ -53,6 +53,6 @@ public class IndexDelete : IIndexDelete, IIndexDeleteScope, IIndexDeleteCollecti
     
     public List<IMigrateCommand> BuildCommands()
     {
-        return new List<IMigrateCommand> { new DeleteIndexCommand(_indexName, _scopeName, _collectionName) };
+        return new List<IMigrateCommand> { new IndexDeleteCommand(_indexName, _scopeName, _collectionName) };
     }
 }

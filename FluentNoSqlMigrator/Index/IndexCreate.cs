@@ -2,68 +2,68 @@
 
 namespace FluentNoSqlMigrator.Index;
 
-public interface IIndexBuild
+public interface IIndexCreate
 {
     /// <summary>
     /// The scope to create the index in (required)
     /// </summary>
     /// <param name="scopeName">Scope name</param>
     /// <returns></returns>
-    IIndexBuildScope OnScope(string scopeName);
+    IIndexCreateScope OnScope(string scopeName);
     
     /// <summary>
     /// Create index in default scope (_default)
     /// </summary>
     /// <returns></returns>
-    IIndexBuildScope OnDefaultScope();
+    IIndexCreateScope OnDefaultScope();
     
     /// <summary>
     /// Add WHERE clause to index
     /// </summary>
     /// <param name="whereClause">WHERE clause (don't include "WHERE")</param>
     /// <returns></returns>
-    IIndexBuild Where(string whereClause);
+    IIndexCreate Where(string whereClause);
     /// <summary>
     /// Explicitly add USING GSI to index
     /// </summary>
     /// <returns></returns>
-    IIndexBuild UsingGsi();
+    IIndexCreate UsingGsi();
 
-    IIndexBuild WithNodes(params string[] nodes);
-    IIndexBuild WithDeferBuild();
-    IIndexBuild WithNumReplicas(int numReplicas);
+    IIndexCreate WithNodes(params string[] nodes);
+    IIndexCreate WithDeferBuild();
+    IIndexCreate WithNumReplicas(int numReplicas);
 }
 
-public interface IIndexBuildScope
+public interface IIndexCreateScope
 {
     /// <summary>
     /// The collection to create the index in (required)
     /// </summary>
     /// <param name="collectionName">Collection name</param>
     /// <returns></returns>
-    IIndexBuildCollection OnCollection(string collectionName);
+    IIndexCreateCollection OnCollection(string collectionName);
     /// <summary>
     /// Create index in default collection (_default)
     /// </summary>
     /// <returns></returns>
-    IIndexBuildCollection OnDefaultCollection();
+    IIndexCreateCollection OnDefaultCollection();
     /// <summary>
     /// Add WHERE clause to index
     /// </summary>
     /// <param name="whereClause">WHERE clause (don't include "WHERE")</param>
     /// <returns></returns>
-    IIndexBuildScope Where(string whereClause);
+    IIndexCreateScope Where(string whereClause);
     /// <summary>
     /// Explicitly add USING GSI to index
     /// </summary>
     /// <returns></returns>
-    IIndexBuildScope UsingGsi();
-    IIndexBuildScope WithNodes(params string[] nodes);
-    IIndexBuildScope WithDeferBuild();
-    IIndexBuildScope WithNumReplicas(int numReplicas);    
+    IIndexCreateScope UsingGsi();
+    IIndexCreateScope WithNodes(params string[] nodes);
+    IIndexCreateScope WithDeferBuild();
+    IIndexCreateScope WithNumReplicas(int numReplicas);    
 }
 
-public interface IIndexBuildCollection
+public interface IIndexCreateCollection
 {
     /// <summary>
     /// Field(s) to include in the index.
@@ -71,7 +71,7 @@ public interface IIndexBuildCollection
     /// </summary>
     /// <param name="fieldName">Field name</param>
     /// <returns></returns>
-    IIndexFieldSettings OnField(string fieldName);
+    IIndexCreateFieldSettings OnField(string fieldName);
     
     /// <summary>
     /// Raw field(s) to include in the index. Use this when
@@ -80,61 +80,61 @@ public interface IIndexBuildCollection
     /// </summary>
     /// <param name="rawField">Raw field</param>
     /// <returns></returns>
-    IIndexBuildCollection OnFieldRaw(string rawField);
+    IIndexCreateCollection OnFieldRaw(string rawField);
 
     /// <summary>
     /// Add WHERE clause to index
     /// </summary>
     /// <param name="whereClause">WHERE clause (don't include "WHERE")</param>
     /// <returns></returns>
-    IIndexBuildCollection Where(string whereClause);
+    IIndexCreateCollection Where(string whereClause);
     /// <summary>
     /// Explicitly add USING GSI to index
     /// </summary>
     /// <returns></returns>
-    IIndexBuildCollection UsingGsi();
+    IIndexCreateCollection UsingGsi();
     
-    IIndexBuildCollection WithNodes(params string[] nodes);
-    IIndexBuildCollection WithDeferBuild();
-    IIndexBuildCollection WithNumReplicas(int numReplicas);     
+    IIndexCreateCollection WithNodes(params string[] nodes);
+    IIndexCreateCollection WithDeferBuild();
+    IIndexCreateCollection WithNumReplicas(int numReplicas);     
 }
 
-public interface IIndexFieldSettings
+public interface IIndexCreateFieldSettings
 {
     /// <summary>
     /// Field index is ascending (default if not specified)
     /// </summary>
     /// <returns></returns>
-    IIndexBuildCollection Ascending();
+    IIndexCreateCollection Ascending();
     
     /// <summary>
     /// Field index is descending
     /// </summary>
     /// <returns></returns>
-    IIndexBuildCollection Descending();
+    IIndexCreateCollection Descending();
     
     /// <summary>
     /// Add WHERE clause to index
     /// </summary>
     /// <param name="whereClause">WHERE clause (don't include "WHERE")</param>
     /// <returns></returns>
-    IIndexFieldSettings Where(string whereClause);
+    IIndexCreateFieldSettings Where(string whereClause);
     /// <summary>
     /// Explicitly add USING GSI to index
     /// </summary>
     /// <returns></returns>
-    IIndexFieldSettings UsingGsi();
+    IIndexCreateFieldSettings UsingGsi();
     
-    IIndexFieldSettings WithNodes(params string[] nodes);
-    IIndexFieldSettings WithDeferBuild();
-    IIndexFieldSettings WithNumReplicas(int numReplicas);  
+    IIndexCreateFieldSettings WithNodes(params string[] nodes);
+    IIndexCreateFieldSettings WithDeferBuild();
+    IIndexCreateFieldSettings WithNumReplicas(int numReplicas);  
 }
 
 // TODO: add "WHERE" clause
 // TODO: USING GSI
 // TODO: with nodes
 // TODO: deferred
-public class IndexBuild : IIndexBuild, IIndexBuildScope, IIndexBuildCollection, IIndexFieldSettings, IBuildCommands
+public class IndexCreate : IIndexCreate, IIndexCreateScope, IIndexCreateCollection, IIndexCreateFieldSettings, IBuildCommands
 {
     private readonly string _indexName;
     private string _collectionName;
@@ -146,7 +146,7 @@ public class IndexBuild : IIndexBuild, IIndexBuildScope, IIndexBuildCollection, 
     private bool _deferBuild;
     private int? _numReplicas;
 
-    public IndexBuild(string indexName)
+    public IndexCreate(string indexName)
     {
         _indexName = indexName;
         _fields = new List<BuildIndexCommandField>();
@@ -154,49 +154,49 @@ public class IndexBuild : IIndexBuild, IIndexBuildScope, IIndexBuildCollection, 
         MigrationContext.AddCommands(BuildCommands);
     }
 
-    public IIndexBuildScope OnScope(string scopeName)
+    public IIndexCreateScope OnScope(string scopeName)
     {
         _scopeName = scopeName;
         return this;
     }
 
-    public IIndexBuildScope OnDefaultScope()
+    public IIndexCreateScope OnDefaultScope()
     {
         _scopeName = "_default";
         return this;
     }
 
-    public IIndexBuildCollection OnCollection(string collectionName)
+    public IIndexCreateCollection OnCollection(string collectionName)
     {
         _collectionName = collectionName;
         return this;
     }
 
-    public IIndexBuildCollection OnDefaultCollection()
+    public IIndexCreateCollection OnDefaultCollection()
     {
         _collectionName = "_default";
         return this;
     }
 
-    public IIndexFieldSettings OnField(string fieldName)
+    public IIndexCreateFieldSettings OnField(string fieldName)
     {
         _fields.Add(new BuildIndexCommandField(fieldName, "", false));
         return this;
     }
 
-    public IIndexBuildCollection OnFieldRaw(string rawField)
+    public IIndexCreateCollection OnFieldRaw(string rawField)
     {
         _fields.Add(new BuildIndexCommandField(rawField, "", true));
         return this;
     }
 
-    public IIndexBuildCollection Ascending()
+    public IIndexCreateCollection Ascending()
     {
         _fields.Last().AscOrDesc = "ASC";
         return this;
     }
 
-    public IIndexBuildCollection Descending()
+    public IIndexCreateCollection Descending()
     {
         _fields.Last().AscOrDesc = "DESC";
         return this;
@@ -209,25 +209,25 @@ public class IndexBuild : IIndexBuild, IIndexBuildScope, IIndexBuildCollection, 
     // same is true for USING GSI and WITH
     #region WHERE
     
-    IIndexBuild IIndexBuild.Where(string whereClause)
+    IIndexCreate IIndexCreate.Where(string whereClause)
     {
         _whereClause = whereClause;
         return this;
     }
 
-    IIndexBuildScope IIndexBuildScope.Where(string whereClause)
+    IIndexCreateScope IIndexCreateScope.Where(string whereClause)
     {
         _whereClause = whereClause;
         return this;
     }
     
-    IIndexBuildCollection IIndexBuildCollection.Where(string whereClause)
+    IIndexCreateCollection IIndexCreateCollection.Where(string whereClause)
     {
         _whereClause = whereClause;
         return this;
     }
     
-    IIndexFieldSettings IIndexFieldSettings.Where(string whereClause)
+    IIndexCreateFieldSettings IIndexCreateFieldSettings.Where(string whereClause)
     {
         _whereClause = whereClause;
         return this;
@@ -238,23 +238,23 @@ public class IndexBuild : IIndexBuild, IIndexBuildScope, IIndexBuildCollection, 
     // Since GSI is the only index option (for now)
     // Adding it for completeness
     #region USING GSI
-    IIndexFieldSettings IIndexFieldSettings.UsingGsi()
+    IIndexCreateFieldSettings IIndexCreateFieldSettings.UsingGsi()
     {
         _useGsi = true;
         return this;
     }
 
-    IIndexBuildCollection IIndexBuildCollection.UsingGsi()
+    IIndexCreateCollection IIndexCreateCollection.UsingGsi()
     {
         _useGsi = true;
         return this;
     }
-    IIndexBuildScope IIndexBuildScope.UsingGsi()
+    IIndexCreateScope IIndexCreateScope.UsingGsi()
     {
         _useGsi = true;
         return this;
     }
-    IIndexBuild IIndexBuild.UsingGsi()
+    IIndexCreate IIndexCreate.UsingGsi()
     {
         _useGsi = true;
         return this;
@@ -264,64 +264,64 @@ public class IndexBuild : IIndexBuild, IIndexBuildScope, IIndexBuildCollection, 
 
     #region WITH
     
-    IIndexFieldSettings IIndexFieldSettings.WithNodes(params string[] nodes)
+    IIndexCreateFieldSettings IIndexCreateFieldSettings.WithNodes(params string[] nodes)
     {
         _withNodes.AddRange(nodes);
         return this;
     }
-    IIndexBuildCollection IIndexBuildCollection.WithNodes(params string[] nodes)
+    IIndexCreateCollection IIndexCreateCollection.WithNodes(params string[] nodes)
     {
         _withNodes.AddRange(nodes);
         return this;
     }    
-    IIndexBuildScope IIndexBuildScope.WithNodes(params string[] nodes)
+    IIndexCreateScope IIndexCreateScope.WithNodes(params string[] nodes)
     {
         _withNodes.AddRange(nodes);
         return this;
     }
-    IIndexBuild IIndexBuild.WithNodes(params string[] nodes)
+    IIndexCreate IIndexCreate.WithNodes(params string[] nodes)
     {
         _withNodes.AddRange(nodes);
         return this;
     }    
     
-    IIndexFieldSettings IIndexFieldSettings.WithDeferBuild()
+    IIndexCreateFieldSettings IIndexCreateFieldSettings.WithDeferBuild()
     {
         _deferBuild = true;
         return this;
     }
-    IIndexBuildCollection IIndexBuildCollection.WithDeferBuild()
+    IIndexCreateCollection IIndexCreateCollection.WithDeferBuild()
     {
         _deferBuild = true;
         return this;
     }    
-    IIndexBuildScope IIndexBuildScope.WithDeferBuild()
+    IIndexCreateScope IIndexCreateScope.WithDeferBuild()
     {
         _deferBuild = true;
         return this;
     }
-    IIndexBuild IIndexBuild.WithDeferBuild()
+    IIndexCreate IIndexCreate.WithDeferBuild()
     {
         _deferBuild = true;
         return this;
     }
 
-    IIndexFieldSettings IIndexFieldSettings.WithNumReplicas(int numReplicas)
+    IIndexCreateFieldSettings IIndexCreateFieldSettings.WithNumReplicas(int numReplicas)
     {
         _numReplicas = numReplicas;
         return this;
     }
-    IIndexBuildCollection IIndexBuildCollection.WithNumReplicas(int numReplicas)
+    IIndexCreateCollection IIndexCreateCollection.WithNumReplicas(int numReplicas)
     {
         _numReplicas = numReplicas;
         return this;
     }
-    IIndexBuildScope IIndexBuildScope.WithNumReplicas(int numReplicas)
+    IIndexCreateScope IIndexCreateScope.WithNumReplicas(int numReplicas)
     {
         _numReplicas = numReplicas;
         return this;
     }
-    IIndexBuild IIndexBuild.WithNumReplicas(int numReplicas)
+    IIndexCreate IIndexCreate.WithNumReplicas(int numReplicas)
     {
         _numReplicas = numReplicas;
         return this;
@@ -333,7 +333,7 @@ public class IndexBuild : IIndexBuild, IIndexBuildScope, IIndexBuildCollection, 
     {
         return new List<IMigrateCommand>
         {
-            new BuildIndexCommand(_indexName, _scopeName, _collectionName, _fields, _whereClause, _useGsi, _withNodes, _deferBuild, _numReplicas)
+            new IndexCreateCommand(_indexName, _scopeName, _collectionName, _fields, _whereClause, _useGsi, _withNodes, _deferBuild, _numReplicas)
         };
     }
 }

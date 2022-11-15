@@ -4,12 +4,12 @@ using FluentNoSqlMigrator.Infrastructure;
 
 namespace FluentNoSqlMigrator.Collection;
 
-internal class BuildCollectionCommand : IMigrateCommand
+internal class CollectionCreateCommand : IMigrateCommand
 {
     private readonly string _scopeName;
     private readonly string _collectionName;
 
-    public BuildCollectionCommand(string scopeName, string collectionName)
+    public CollectionCreateCommand(string scopeName, string collectionName)
     {
         _scopeName = scopeName;
         _collectionName = collectionName;

@@ -23,7 +23,7 @@ public class ScopeDelete : IScopeSettingsDelete, IBuildCommands
     {
         return new List<IMigrateCommand>
         {
-            new DeleteScopeCommand(_scopeName)
+            new ScopeDeleteCommand(_scopeName)
         };
     }
 }

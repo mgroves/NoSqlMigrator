@@ -50,5 +50,5 @@ public class DeleteBuilder
     /// <summary>
     /// Prepare to delete document(s)
     /// </summary>
-    public IDocumentDelete From => new DeleteDocument();
+    public IDocumentDelete From => new DocumentDelete();
 }

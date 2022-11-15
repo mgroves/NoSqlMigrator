@@ -4,13 +4,13 @@ using DropQueryIndexOptions = Couchbase.Management.Query.DropQueryIndexOptions;
 
 namespace FluentNoSqlMigrator.Index;
 
-public class DeleteIndexCommand : IMigrateCommand
+public class IndexDeleteCommand : IMigrateCommand
 {
     private readonly string _indexName;
     private readonly string _scopeName;
     private readonly string _collectionName;
 
-    public DeleteIndexCommand(string indexName, string scopeName, string collectionName)
+    public IndexDeleteCommand(string indexName, string scopeName, string collectionName)
     {
         _indexName = indexName;
         _scopeName = scopeName;

@@ -40,7 +40,7 @@ internal class CollectionDelete : ICollectionSettingsDelete, IBuildCommands
     {
         return new List<IMigrateCommand>
         {
-            new DeleteCollectionCommand(_scopeName, _collectionName)
+            new CollectionDeleteCommand(_scopeName, _collectionName)
         };
     }
 }

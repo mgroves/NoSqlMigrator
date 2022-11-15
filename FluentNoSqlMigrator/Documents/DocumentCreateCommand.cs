@@ -3,13 +3,13 @@ using FluentNoSqlMigrator.Infrastructure;
 
 namespace FluentNoSqlMigrator.Documents;
 
-public class BuildDocumentsCommand : IMigrateCommand
+public class DocumentCreateCommand : IMigrateCommand
 {
     private readonly string _scopeName;
     private readonly string _collectionName;
     private readonly Dictionary<string, object> _documents;
 
-    public BuildDocumentsCommand(string scopeName, string collectionName, Dictionary<string, object> documents)
+    public DocumentCreateCommand(string scopeName, string collectionName, Dictionary<string, object> documents)
     {
         _scopeName = scopeName;
         _collectionName = collectionName;

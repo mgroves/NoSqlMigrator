@@ -13,8 +13,8 @@ public abstract class Migrate
     private DeleteBuilder _delete;
     protected DeleteBuilder Delete => (_delete ??= new DeleteBuilder());
 
-    private InsertBuilder _insert;
-    protected InsertBuilder Insert => (_insert ??= new InsertBuilder());
+    private DocumentCreate _insert;
+    protected DocumentCreate Insert => (_insert ??= new DocumentCreate());
 
     private ExecuteBuilder _execute;
     protected ExecuteBuilder Execute => (_execute ??= new ExecuteBuilder());

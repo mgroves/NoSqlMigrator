@@ -2,117 +2,117 @@
 
 namespace FluentNoSqlMigrator.Index;
 
-public interface IPrimaryIndexBuild
+public interface IPrimaryIndexCreate
 {
     /// <summary>
     /// The scope to create the primary index in (required)
     /// </summary>
     /// <param name="scopeName">Scope name</param>
     /// <returns></returns>
-    IPrimaryIndexBuildScope OnScope(string scopeName);
+    IPrimaryIndexCreateScope OnScope(string scopeName);
     
     /// <summary>
     /// Create primary index in default scope (_default)
     /// </summary>
     /// <returns></returns>
-    IPrimaryIndexBuildScope OnDefaultScope();
+    IPrimaryIndexCreateScope OnDefaultScope();
     
     /// <summary>
     /// Explicitly add USING GSI to primary index
     /// </summary>
     /// <returns></returns>
-    IPrimaryIndexBuild UsingGsi();
+    IPrimaryIndexCreate UsingGsi();
 
     /// <summary>
     /// Add nodes to WITH for primary index
     /// </summary>
     /// <param name="nodes">Multiple nodes to distribute replicas. Port number is required</param>
     /// <returns></returns>
-    IPrimaryIndexBuild WithNodes(params string[] nodes);
+    IPrimaryIndexCreate WithNodes(params string[] nodes);
     
     /// <summary>
     /// Defer the primary index being built
     /// </summary>
     /// <returns></returns>
-    IPrimaryIndexBuild WithDeferBuild();
+    IPrimaryIndexCreate WithDeferBuild();
     
     /// <summary>
     /// Number of replicas for load-balancing/HA
     /// </summary>
     /// <param name="numReplicas">Number, If the value of this property is not less than the number of index nodes in the cluster, then the index creation will fail.</param>
     /// <returns></returns>
-    IPrimaryIndexBuild WithNumReplicas(uint numReplicas);
+    IPrimaryIndexCreate WithNumReplicas(uint numReplicas);
 }
 
-public interface IPrimaryIndexBuildScope
+public interface IPrimaryIndexCreateScope
 {
     /// <summary>
     /// The collection to create the index in (required)
     /// </summary>
     /// <param name="collectionName">Collection name</param>
     /// <returns></returns>
-    IPrimaryIndexBuildCollection OnCollection(string collectionName);
+    IPrimaryIndexCreateCollection OnCollection(string collectionName);
     /// <summary>
     /// Create index in default collection (_default)
     /// </summary>
     /// <returns></returns>
-    IPrimaryIndexBuildCollection OnDefaultCollection();
+    IPrimaryIndexCreateCollection OnDefaultCollection();
     /// <summary>
     /// Explicitly add USING GSI to primary index
     /// </summary>
     /// <returns></returns>
-    IPrimaryIndexBuildScope UsingGsi();
+    IPrimaryIndexCreateScope UsingGsi();
     /// <summary>
     /// Add nodes to WITH for primary index
     /// </summary>
     /// <param name="nodes">Multiple nodes to distribute replicas. Port number is required</param>
     /// <returns></returns>    
-    IPrimaryIndexBuildScope WithNodes(params string[] nodes);
+    IPrimaryIndexCreateScope WithNodes(params string[] nodes);
     /// <summary>
     /// Defer the primary index being built
     /// </summary>
     /// <returns></returns>
-    IPrimaryIndexBuildScope WithDeferBuild();
+    IPrimaryIndexCreateScope WithDeferBuild();
     /// <summary>
     /// Number of replicas for load-balancing/HA
     /// </summary>
     /// <param name="numReplicas">Number, If the value of this property is not less than the number of index nodes in the cluster, then the index creation will fail.</param>
     /// <returns></returns>
-    IPrimaryIndexBuildScope WithNumReplicas(uint numReplicas);    
+    IPrimaryIndexCreateScope WithNumReplicas(uint numReplicas);    
 }
 
-public interface IPrimaryIndexBuildCollection
+public interface IPrimaryIndexCreateCollection
 {
     /// <summary>
     /// Explicitly add USING GSI to primary index
     /// </summary>
     /// <returns></returns>
-    IPrimaryIndexBuildCollection UsingGsi();
+    IPrimaryIndexCreateCollection UsingGsi();
 
     /// <summary>
     /// Add nodes to WITH for primary index
     /// </summary>
     /// <param name="nodes">Multiple nodes to distribute replicas. Port number is required</param>
     /// <returns></returns>
-    IPrimaryIndexBuildCollection WithNodes(params string[] nodes);
+    IPrimaryIndexCreateCollection WithNodes(params string[] nodes);
     /// <summary>
     /// Defer the primary index being built
     /// </summary>
     /// <returns></returns>
-    IPrimaryIndexBuildCollection WithDeferBuild();
+    IPrimaryIndexCreateCollection WithDeferBuild();
     /// <summary>
     /// Number of replicas for load-balancing/HA
     /// </summary>
     /// <param name="numReplicas">Number, If the value of this property is not less than the number of index nodes in the cluster, then the index creation will fail.</param>
     /// <returns></returns>
-    IPrimaryIndexBuildCollection WithNumReplicas(uint numReplicas);     
+    IPrimaryIndexCreateCollection WithNumReplicas(uint numReplicas);     
 }
 
 // TODO: add "WHERE" clause
 // TODO: USING GSI
 // TODO: with nodes
 // TODO: deferred
-public class PrimaryIndexBuild : IPrimaryIndexBuild, IPrimaryIndexBuildScope, IPrimaryIndexBuildCollection, IBuildCommands
+public class PrimaryIndexCreate : IPrimaryIndexCreate, IPrimaryIndexCreateScope, IPrimaryIndexCreateCollection, IBuildCommands
 {
     private readonly string _indexName;
     private string _collectionName;
@@ -122,32 +122,32 @@ public class PrimaryIndexBuild : IPrimaryIndexBuild, IPrimaryIndexBuildScope, IP
     private bool _deferBuild;
     private uint? _numReplicas;
 
-    public PrimaryIndexBuild(string indexName)
+    public PrimaryIndexCreate(string indexName)
     {
         _indexName = indexName;
         _withNodes = new List<string>();
         MigrationContext.AddCommands(BuildCommands);
     }
 
-    public IPrimaryIndexBuildScope OnScope(string scopeName)
+    public IPrimaryIndexCreateScope OnScope(string scopeName)
     {
         _scopeName = scopeName;
         return this;
     }
 
-    public IPrimaryIndexBuildScope OnDefaultScope()
+    public IPrimaryIndexCreateScope OnDefaultScope()
     {
         _scopeName = "_default";
         return this;
     }
 
-    public IPrimaryIndexBuildCollection OnCollection(string collectionName)
+    public IPrimaryIndexCreateCollection OnCollection(string collectionName)
     {
         _collectionName = collectionName;
         return this;
     }
 
-    public IPrimaryIndexBuildCollection OnDefaultCollection()
+    public IPrimaryIndexCreateCollection OnDefaultCollection()
     {
         _collectionName = "_default";
         return this;
@@ -160,17 +160,17 @@ public class PrimaryIndexBuild : IPrimaryIndexBuild, IPrimaryIndexBuildScope, IP
     // same is true for USING GSI
     #region WITH
 
-    IPrimaryIndexBuildCollection IPrimaryIndexBuildCollection.WithNodes(params string[] nodes)
+    IPrimaryIndexCreateCollection IPrimaryIndexCreateCollection.WithNodes(params string[] nodes)
     {
         _withNodes.AddRange(nodes);
         return this;
     }
-    IPrimaryIndexBuildScope IPrimaryIndexBuildScope.WithNodes(params string[] nodes)
+    IPrimaryIndexCreateScope IPrimaryIndexCreateScope.WithNodes(params string[] nodes)
     {
         _withNodes.AddRange(nodes);
         return this;
     }
-    IPrimaryIndexBuild IPrimaryIndexBuild.WithNodes(params string[] nodes)
+    IPrimaryIndexCreate IPrimaryIndexCreate.WithNodes(params string[] nodes)
     {
         _withNodes.AddRange(nodes);
         return this;
@@ -179,17 +179,17 @@ public class PrimaryIndexBuild : IPrimaryIndexBuild, IPrimaryIndexBuildScope, IP
     
     
     
-    IPrimaryIndexBuildCollection IPrimaryIndexBuildCollection.WithDeferBuild()
+    IPrimaryIndexCreateCollection IPrimaryIndexCreateCollection.WithDeferBuild()
     {
         _deferBuild = true;
         return this;
     }
-    IPrimaryIndexBuildScope IPrimaryIndexBuildScope.WithDeferBuild()
+    IPrimaryIndexCreateScope IPrimaryIndexCreateScope.WithDeferBuild()
     {
         _deferBuild = true;
         return this;
     }
-    IPrimaryIndexBuild IPrimaryIndexBuild.WithDeferBuild()
+    IPrimaryIndexCreate IPrimaryIndexCreate.WithDeferBuild()
     {
         _deferBuild = true;
         return this;
@@ -198,17 +198,17 @@ public class PrimaryIndexBuild : IPrimaryIndexBuild, IPrimaryIndexBuildScope, IP
     
     
 
-    IPrimaryIndexBuildCollection IPrimaryIndexBuildCollection.WithNumReplicas(uint numReplicas)
+    IPrimaryIndexCreateCollection IPrimaryIndexCreateCollection.WithNumReplicas(uint numReplicas)
     {
         _numReplicas = numReplicas;
         return this;
     }
-    IPrimaryIndexBuildScope IPrimaryIndexBuildScope.WithNumReplicas(uint numReplicas)
+    IPrimaryIndexCreateScope IPrimaryIndexCreateScope.WithNumReplicas(uint numReplicas)
     {
         _numReplicas = numReplicas;
         return this;
     }
-    IPrimaryIndexBuild IPrimaryIndexBuild.WithNumReplicas(uint numReplicas)
+    IPrimaryIndexCreate IPrimaryIndexCreate.WithNumReplicas(uint numReplicas)
     {
         _numReplicas = numReplicas;
         return this;
@@ -222,17 +222,17 @@ public class PrimaryIndexBuild : IPrimaryIndexBuild, IPrimaryIndexBuildScope, IP
     // Adding it for completeness
     #region USING GSI
 
-    IPrimaryIndexBuildCollection IPrimaryIndexBuildCollection.UsingGsi()
+    IPrimaryIndexCreateCollection IPrimaryIndexCreateCollection.UsingGsi()
     {
         _useGsi = true;
         return this;
     }
-    IPrimaryIndexBuild IPrimaryIndexBuild.UsingGsi()
+    IPrimaryIndexCreate IPrimaryIndexCreate.UsingGsi()
     {
         _useGsi = true;
         return this;
     }
-    IPrimaryIndexBuildScope IPrimaryIndexBuildScope.UsingGsi()
+    IPrimaryIndexCreateScope IPrimaryIndexCreateScope.UsingGsi()
     {
         _useGsi = true;
         return this;
@@ -244,7 +244,7 @@ public class PrimaryIndexBuild : IPrimaryIndexBuild, IPrimaryIndexBuildScope, IP
     {
         return new List<IMigrateCommand>
         {
-            new BuildPrimaryIndexCommand(_indexName, _scopeName, _collectionName, _useGsi, _withNodes, _deferBuild, _numReplicas)
+            new PrimaryIndexCreateCommand(_indexName, _scopeName, _collectionName, _useGsi, _withNodes, _deferBuild, _numReplicas)
         };
     }
 }

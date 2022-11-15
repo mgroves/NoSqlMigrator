@@ -11,9 +11,9 @@ public class CreateBuilder
     /// </summary>
     /// <param name="scopeName">Scope name</param>
     /// <returns></returns>
-    public IScopeSettingsBuild Scope(string scopeName)
+    public IScopeCreateSettings Scope(string scopeName)
     {
-        return new ScopeBuild(scopeName);
+        return new ScopeCreate(scopeName);
     }
 
     /// <summary>
@@ -21,9 +21,9 @@ public class CreateBuilder
     /// </summary>
     /// <param name="collectionName">Collection name</param>
     /// <returns></returns>
-    public ICollectionSettingsBuild Collection(string collectionName)
+    public ICollectionCreateSettings Collection(string collectionName)
     {
-        return new CollectionBuild(collectionName);
+        return new CollectionCreate(collectionName);
     }
 
     /// <summary>
@@ -31,9 +31,9 @@ public class CreateBuilder
     /// </summary>
     /// <param name="indexName">Index name</param>
     /// <returns></returns>
-    public IIndexBuild Index(string indexName)
+    public IIndexCreate Index(string indexName)
     {
-        return new IndexBuild(indexName);
+        return new IndexCreate(indexName);
     }
 
     /// <summary>
@@ -41,8 +41,8 @@ public class CreateBuilder
     /// </summary>
     /// <param name="indexName">Index name (optional)</param>
     /// <returns></returns>
-    public IPrimaryIndexBuild PrimaryIndex(string indexName = "")
+    public IPrimaryIndexCreate PrimaryIndex(string indexName = "")
     {
-        return new PrimaryIndexBuild(indexName);
+        return new PrimaryIndexCreate(indexName);
     }
 }
