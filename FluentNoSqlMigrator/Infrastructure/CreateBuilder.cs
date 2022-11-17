@@ -38,6 +38,7 @@ public class CreateBuilder
 
     /// <summary>
     /// Create a new SQL++ primary index
+    /// Note: Primary index is not recommended for production.
     /// </summary>
     /// <param name="indexName">Index name (optional)</param>
     /// <returns></returns>

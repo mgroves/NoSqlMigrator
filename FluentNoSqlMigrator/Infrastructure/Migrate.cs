@@ -18,4 +18,7 @@ public abstract class Migrate
 
     private ExecuteBuilder _execute;
     protected ExecuteBuilder Execute => (_execute ??= new ExecuteBuilder());
+
+    private UpdateBuilder _update;
+    protected UpdateBuilder Update => (_update ??= new UpdateBuilder());
 }

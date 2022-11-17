@@ -70,7 +70,6 @@ public class TestMigration_4 : Migrate
             .OnCollection("myCollection1")
             .UsingGsi()
             .WithNodes("127.0.0.1:8091")
-            .WithDeferBuild()
             .WithNumReplicas(0);
     }
 
@@ -118,5 +117,27 @@ public class TestMigration_6 : Migrate
     {
         Execute.Sql(@"
             DELETE FROM `testmigrator`.`myScope`.`myCollection1` USE KEYS ""doc3"";");
+    }
+}
+
+[Migration(7)]
+public class TestMigration_7 : Migrate
+{
+    public override void Up()
+    {
+        Update.Collection("myCollection1")
+            .InScope("myScope")
+            .UpsertFieldWithValue("bing", "bong")
+            .RemoveField("foo");
+    }
+
+    public override void Down()
+    {
+        // can't really "down" this migration
+        // since upsert and remove can be destructive
+        Update.Collection("myCollection1")
+            .InScope("myScope")
+            .RemoveField("bing")
+            .UpsertFieldWithValue("foo", "fooIsBack");
     }
 }
