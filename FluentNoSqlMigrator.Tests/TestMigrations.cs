@@ -141,3 +141,25 @@ public class TestMigration_7 : Migrate
             .UpsertFieldWithValue("foo", "fooIsBack");
     }
 }
+
+[Migration(8)]
+public class TestMigration_8 : Migrate
+{
+    public override void Up()
+    {
+        Update.Document("doc3")
+            .InCollection("myCollection1")
+            .InScope("myScope")
+            .UpsertFieldWithValue("shoeSize", 13)
+            .RemoveField("baz");
+    }
+
+    public override void Down()
+    {
+        Update.Document("doc3")
+            .InCollection("myCollection1")
+            .InScope("myScope")
+            .RemoveField("shoeSize")
+            .UpsertFieldWithValue("baz", "qux");
+    }
+}

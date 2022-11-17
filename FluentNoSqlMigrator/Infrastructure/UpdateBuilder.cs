@@ -14,4 +14,14 @@ public class UpdateBuilder
     {
         return new UpdateCollection(collectionName);
     }
+
+    /// <summary>
+    /// Document to apply updates
+    /// </summary>
+    /// <param name="documentId">Document id (key)</param>
+    /// <returns></returns>
+    public IUpdateDocument Document(string documentId)
+    {
+        return new UpdateDocument(documentId);
+    }
 }
