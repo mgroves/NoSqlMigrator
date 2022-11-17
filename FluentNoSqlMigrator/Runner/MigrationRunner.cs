@@ -9,12 +9,40 @@ namespace FluentNoSqlMigrator.Runner;
 public class MigrationRunner
 {
     private RunSettings _settings;
-    private Assembly _assembly;
+    private List<Type> _migrateClasses;
 
     public async Task Run(Assembly assembly, RunSettings settings)
     {
         _settings = settings;
-        _assembly = assembly;
+        _migrateClasses = assembly.GetTypes()
+            .Where(t => t.IsSubclassOf(typeof(Migrate)))
+            .ToList();
+
+        ValidateTypes();
+
+        if (_settings.Direction == DirectionEnum.Up)
+            await RunUp();
+        else
+            await RunDown();
+    }
+
+    // detect if there's a missing attribute and produce an appropriate error message
+    private void ValidateTypes()
+    {
+        var typesWithoutAttributes = _migrateClasses
+            .Where(t => (Attribute.GetCustomAttribute(t, typeof(Migration)) is null));
+
+        if (typesWithoutAttributes.Any())
+            throw new Exception("Migration attributes are required. These migration classes do not have attributes: "
+                                + string.Join(",", typesWithoutAttributes.Select(t => t.FullName)));
+    }
+
+    public async Task Run(List<Type> migrateClasses, RunSettings settings)
+    {
+        _settings = settings;
+        _migrateClasses = migrateClasses;
+        
+        ValidateTypes();
 
         if (_settings.Direction == DirectionEnum.Up)
             await RunUp();
@@ -25,9 +53,7 @@ public class MigrationRunner
     private async Task RunUp()
     {
         // get all the migrations, ordered by attribute
-        // TODO: detect if there's a missing attribute and produce an appropriate error message
-        var migrations = _assembly.GetTypes()
-            .Where(t => t.IsSubclassOf(typeof(Migrate)))
+        var migrations = _migrateClasses
             .OrderBy(t => ((Migration)Attribute.GetCustomAttribute(t, typeof(Migration))).MigrationNumber)
             .ToList();
 
@@ -59,9 +85,7 @@ public class MigrationRunner
     private async Task RunDown()
     {
         // get all the migrations, ordered by attribute DESCENDING
-        // TODO: detect if there's a missing attribute and produce an appropriate error message
-        var migrations = _assembly.GetTypes()
-            .Where(t => t.IsSubclassOf(typeof(Migrate)))
+        var migrations = _migrateClasses
             .OrderByDescending(t => ((Migration)Attribute.GetCustomAttribute(t, typeof(Migration))).MigrationNumber)
             .ToList();
 
