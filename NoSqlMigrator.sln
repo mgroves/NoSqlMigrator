@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoSqlMigrator", "NoSqlMigrator\NoSqlMigrator.csproj", "{48B33A93-1A4D-4458-8D69-5736606A78C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoSqlMigrator.Tests", "NoSqlMigrator.Tests\NoSqlMigrator.Tests.csproj", "{FFA55C1E-5602-4255-ACFD-432B362F2B3C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoSqlMigrator.Runner", "NoSqlMigrator.Runner\NoSqlMigrator.Runner.csproj", "{AB95C30B-6DDE-4200-ADA2-222A3D64EDC8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{48B33A93-1A4D-4458-8D69-5736606A78C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{48B33A93-1A4D-4458-8D69-5736606A78C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{48B33A93-1A4D-4458-8D69-5736606A78C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{48B33A93-1A4D-4458-8D69-5736606A78C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFA55C1E-5602-4255-ACFD-432B362F2B3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFA55C1E-5602-4255-ACFD-432B362F2B3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFA55C1E-5602-4255-ACFD-432B362F2B3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFA55C1E-5602-4255-ACFD-432B362F2B3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB95C30B-6DDE-4200-ADA2-222A3D64EDC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB95C30B-6DDE-4200-ADA2-222A3D64EDC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB95C30B-6DDE-4200-ADA2-222A3D64EDC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB95C30B-6DDE-4200-ADA2-222A3D64EDC8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
