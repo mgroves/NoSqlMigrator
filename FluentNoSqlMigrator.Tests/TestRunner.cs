@@ -30,7 +30,7 @@ public class TestRunner
         await runner.Run(typeof(TestMigration_1).Assembly, settings);
 
         // assert
-        Assert.That((await coll.ExistsAsync("FluentMigrationHistory")).Exists, Is.True);
+        Assert.That((await coll.ExistsAsync("MigrationHistory")).Exists, Is.True);
     }
 
     [Test]
@@ -48,7 +48,7 @@ public class TestRunner
         await runner.Run(typeof(TestMigration_1).Assembly, settings);
 
         // assert
-        Assert.That((await coll.ExistsAsync("FluentMigrationHistory")).Exists, Is.True);
+        Assert.That((await coll.ExistsAsync("MigrationHistory")).Exists, Is.True);
     }
 
     [TearDown]

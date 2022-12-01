@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using Couchbase;
 using Couchbase.Core.Exceptions.KeyValue;
 using Couchbase.KeyValue;
 using FluentNoSqlMigrator.Infrastructure;
@@ -24,17 +23,6 @@ public class MigrationRunner
             await RunUp();
         else
             await RunDown();
-    }
-
-    // detect if there's a missing attribute and produce an appropriate error message
-    private void ValidateTypes()
-    {
-        var typesWithoutAttributes = _migrateClasses
-            .Where(t => (Attribute.GetCustomAttribute(t, typeof(Migration)) is null));
-
-        if (typesWithoutAttributes.Any())
-            throw new Exception("Migration attributes are required. These migration classes do not have attributes: "
-                                + string.Join(",", typesWithoutAttributes.Select(t => t.FullName)));
     }
 
     public async Task Run(List<Type> migrateClasses, RunSettings settings)
@@ -67,6 +55,10 @@ public class MigrationRunner
             if (await IsMigrationAlreadyRun(migrationNumber))
                 continue;
 
+            // has the limit been reached?
+            if (_settings.Limit.HasValue && migrationNumber > _settings.Limit)
+                break;
+            
             // run everything, it will put commands into MigrationContext
             var migration = Activator.CreateInstance(migrate) as Migrate;
             migration.Up();
@@ -96,10 +88,15 @@ public class MigrationRunner
             
             // has this already been run?
             var migrationNumber = ((Migration)Attribute.GetCustomAttribute(migrate, typeof(Migration))).MigrationNumber;
+
             var alreadyRun = await IsMigrationAlreadyRun(migrationNumber);
             if (!alreadyRun)
                 continue;
 
+            // has the limit been reached?
+            if (_settings.Limit.HasValue && migrationNumber < _settings.Limit)
+                break;
+            
             // run everything in context
             var migration = Activator.CreateInstance(migrate) as Migrate;
             migration.Down();
@@ -120,14 +117,14 @@ public class MigrationRunner
         try
         {
             // get the doc
-            var doc = await collection.GetAsync("FluentMigrationHistory");
-            var fluentMigrationHistory = doc.ContentAs<FluentMigrationHistory>();
+            var doc = await collection.GetAsync("MigrationHistory");
+            var migrationHistory = doc.ContentAs<MigrationHistory>();
 
             // remove the number from history
-            fluentMigrationHistory?.History.Remove(migrationNumber);
+            migrationHistory?.History.Remove(migrationNumber);
 
             // save the doc (replace the whole thing, since there's no subdoc operation to remove from an array
-            await collection.ReplaceAsync("FluentMigrationHistory", fluentMigrationHistory);
+            await collection.ReplaceAsync("MigrationHistory", migrationHistory);
         }
         catch (DocumentNotFoundException)
         {
@@ -140,15 +137,15 @@ public class MigrationRunner
         var collection = await _settings.Bucket.CollectionAsync("_default");
         try
         {
-            await collection.MutateInAsync("FluentMigrationHistory", specs =>
+            await collection.MutateInAsync("MigrationHistory", specs =>
             {
                 specs.ArrayAppend("history", migrationNumber, true);
             });
         }
         catch (DocumentNotFoundException)
         {
-            await collection.InsertAsync("FluentMigrationHistory",
-                new FluentMigrationHistory { History = new List<int> { migrationNumber } });
+            await collection.InsertAsync("MigrationHistory",
+                new MigrationHistory { History = new List<int> { migrationNumber } });
         }
     }
 
@@ -157,8 +154,8 @@ public class MigrationRunner
         var collection = await _settings.Bucket.CollectionAsync("_default");
         try
         {
-            var migrationDoc = await collection.GetAsync("FluentMigrationHistory");
-            var migration = migrationDoc.ContentAs<FluentMigrationHistory>();
+            var migrationDoc = await collection.GetAsync("MigrationHistory");
+            var migration = migrationDoc.ContentAs<MigrationHistory>();
             return migration.History.Contains(migrationNumber);
         }
         catch (DocumentNotFoundException)
@@ -167,26 +164,15 @@ public class MigrationRunner
         }
 
     }
-}
 
-public class FluentMigrationHistory
-{
-    public List<int> History { get; set; }
-}
+    // detect if there's a missing attribute and produce an appropriate error message
+    private void ValidateTypes()
+    {
+        var typesWithoutAttributes = _migrateClasses
+            .Where(t => (Attribute.GetCustomAttribute(t, typeof(Migration)) is null));
 
-public class RunSettings
-{
-    public DirectionEnum Direction { get; set; }
-    public IBucket Bucket { get; set; }
-    /// <summary>
-    /// Limit is the HIGHEST that the migration will run UP to
-    /// Or the LOWEST that the migration will run DOWN to
-    /// If it's not set, ALL migrations will be run
-    /// </summary>
-    public int? Limit { get; set; }
-}
-
-public enum DirectionEnum
-{
-    Up, Down
+        if (typesWithoutAttributes.Any())
+            throw new Exception("Migration attributes are required. These migration classes do not have attributes: "
+                                + string.Join(",", typesWithoutAttributes.Select(t => t.FullName)));
+    }
 }

@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentNoSqlMigrator", "Flue
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentNoSqlMigrator.Tests", "FluentNoSqlMigrator.Tests\FluentNoSqlMigrator.Tests.csproj", "{FFA55C1E-5602-4255-ACFD-432B362F2B3C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluentNoSqlMigrator.Runner", "FluentNoSqlMigrator.Runner\FluentNoSqlMigrator.Runner.csproj", "{AB95C30B-6DDE-4200-ADA2-222A3D64EDC8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{FFA55C1E-5602-4255-ACFD-432B362F2B3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFA55C1E-5602-4255-ACFD-432B362F2B3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFA55C1E-5602-4255-ACFD-432B362F2B3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AB95C30B-6DDE-4200-ADA2-222A3D64EDC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AB95C30B-6DDE-4200-ADA2-222A3D64EDC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AB95C30B-6DDE-4200-ADA2-222A3D64EDC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AB95C30B-6DDE-4200-ADA2-222A3D64EDC8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
