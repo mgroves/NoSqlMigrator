@@ -14,6 +14,7 @@ public class MigrationRunner
     {
         _settings = settings;
         _migrateClasses = assembly.GetTypes()
+            .Where(t => !t.IsAbstract)
             .Where(t => t.IsSubclassOf(typeof(Migrate)))
             .ToList();
 
@@ -175,4 +176,5 @@ public class MigrationRunner
             throw new Exception("Migration attributes are required. These migration classes do not have attributes: "
                                 + string.Join(",", typesWithoutAttributes.Select(t => t.FullName)));
     }
+
 }

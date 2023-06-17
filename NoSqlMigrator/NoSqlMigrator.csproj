@@ -1,16 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>netstandard2.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
-        <Nullable>enable</Nullable>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.0.1-alpha</PackageVersion>
+        <PackageVersion>0.0.2-alpha</PackageVersion>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <LangVersion>latest</LangVersion>
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="CouchbaseNetClient" Version="3.3.6" />
+      <PackageReference Include="CouchbaseNetClient" Version="3.4.8" />
     </ItemGroup>
 
     <ItemGroup>

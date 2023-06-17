@@ -163,3 +163,24 @@ public class TestMigration_8 : Migrate
             .UpsertFieldWithValue("baz", "qux");
     }
 }
+
+public abstract class MigrateBase : Migrate
+{
+
+}
+
+[Migration(9)]
+public class TestMigration_9 : MigrateBase
+{
+    public override void Up()
+    {
+        Create.Collection("testingbaseclass")
+            .InScope("_default");
+    }
+
+    public override void Down()
+    {
+        Delete.Collection("testingbaseclass")
+            .FromScope("_default");
+    }
+}
