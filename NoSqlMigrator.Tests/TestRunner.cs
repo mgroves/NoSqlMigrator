@@ -1,6 +1,5 @@
 ﻿using Couchbase;
 using NoSqlMigrator.Runner;
-using NUnit.Framework;
 
 namespace NoSqlMigrator.Tests;
 

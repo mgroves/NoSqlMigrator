@@ -1,6 +1,9 @@
-﻿using System.Text;
+﻿using System.Diagnostics.Metrics;
+using System.Text;
 using Couchbase;
 using NoSqlMigrator.Infrastructure;
+using Polly;
+using static Couchbase.Core.Diagnostics.Tracing.OuterRequestSpans.ManagerSpan;
 
 namespace NoSqlMigrator.Index;
 
@@ -53,6 +56,11 @@ internal class IndexCreateCommand : IMigrateCommand
 
     public async Task Execute(IBucket bucket)
     {
+        // verify collection exists / is ready
+        var verifyCollection = await VerifyCollectionCreation(bucket);
+        if (!verifyCollection)
+            throw new Exception($"Unable to verify `{_collectionName}` collection exists in `{_scopeName}` scope.");
+
         var sqlIndex = $"CREATE INDEX `{_indexName}` ON `{bucket.Name}`.`{_scopeName}`.`{_collectionName}` ({GetFields()})";
         
         // WHERE clause is optional
@@ -80,7 +88,67 @@ internal class IndexCreateCommand : IMigrateCommand
         }
         
         var cluster = bucket.Cluster;
-        await cluster.QueryAsync<dynamic>(sqlIndex);
+
+        // execute query, retry if necessary
+        var verifyQuery = await VerifyCreateIndex(cluster, sqlIndex);
+
+        if (!verifyQuery)
+            throw new Exception($"Unable to create index `{_indexName}`");
+    }
+
+    private async Task<bool> VerifyCreateIndex(ICluster cluster, string sqlIndex)
+    {
+        var policy = Policy
+            .Handle<Exception>()
+            .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                async (result, timeSpan, retryCount, context) =>
+                {
+                    Console.WriteLine("Retry attempt: " + retryCount + ", Retrying in " + timeSpan.TotalSeconds +
+                                      " seconds.");
+                });
+        var result = false;
+        try
+        {
+            await policy.ExecuteAsync(async () =>
+            {
+                await cluster.QueryAsync<dynamic>(sqlIndex);
+                result = true;
+            });
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("The last retry failed, setting result to false");
+            result = false;
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// verify collection exists/is ready
+    /// this policy will retry 5 times, with an exponential backoff wait
+    /// after each attempt
+    /// until collection is found (or retry limit exceeded)    /// </summary>
+    /// <returns></returns>
+    private async Task<bool> VerifyCollectionCreation(IBucket bucket)
+    {
+        var policy = Policy
+            .HandleResult<bool>(r => r == false)
+            .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                async (result, timeSpan, retryCount, context) =>
+                {
+                    Console.WriteLine("Retry attempt: " + retryCount + ", Retrying in " + timeSpan.TotalSeconds +
+                                      " seconds.");
+                });
+        var result = await policy.ExecuteAsync(async () =>
+        {
+            var collManager = bucket.Collections;
+            var allScopes = await collManager.GetAllScopesAsync();
+            var doesCollectionExist = allScopes
+                .Any(s => s.Collections
+                    .Any(c => c.Name == _collectionName && c.ScopeName == _scopeName));
+            return doesCollectionExist;
+        });
+        return result;
     }
 
     public bool IsValid(List<string> errorMessages)

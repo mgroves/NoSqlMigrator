@@ -1,5 +1,4 @@
-﻿using Couchbase.KeyValue;
-using NoSqlMigrator.Infrastructure;
+﻿using NoSqlMigrator.Infrastructure;
 
 namespace NoSqlMigrator.Tests;
 
