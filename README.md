@@ -1,3 +1,5 @@
+![Image](NoSqlMigrator/logo_wide.png)
+
 # NoSqlMigrator
 
 [![CI for NoSqlMigrator](https://github.com/mgroves/NoSqlMigrator/actions/workflows/ci.yml/badge.svg)](https://github.com/mgroves/NoSqlMigrator/actions/workflows/ci.yml)

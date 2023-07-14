@@ -4,9 +4,17 @@
         <TargetFramework>netstandard2.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageVersion>0.0.3-alpha</PackageVersion>
+        <PackageVersion>0.0.3-alpha2</PackageVersion>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <LangVersion>latest</LangVersion>
+        <Title>NoSqlMigrator</Title>
+        <Description>NoSqlMigrator is a NoSQL Couchbase database migration framework for .NET written in C#. Create migrations (classes) that derive from the Migration base class and have a Migration attribute with a unique version number attached to them. Upon executing FluentMigrator, you tell it which version to migrate to and it will run all necessary migrations in order to bring your database up to that version.</Description>
+        <PackageProjectUrl>https://github.com/mgroves/NoSqlMigrator</PackageProjectUrl>
+        <PackageIcon>logo.png</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <RepositoryUrl>https://github.com/mgroves/NoSqlMigrator</RepositoryUrl>
+        <PackageTags>Couchbase;NoSQL;migration;database;fluent</PackageTags>
+        <Copyright>Copyright 2022-Present © Matthew D. Groves and contributors</Copyright>
     </PropertyGroup>
 
     <ItemGroup>
@@ -16,6 +24,20 @@
 
     <ItemGroup>
       <Folder Include="Collection\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="..\README.md">
+        <Pack>True</Pack>
+        <PackagePath>\</PackagePath>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="logo.png">
+        <Pack>True</Pack>
+        <PackagePath>\</PackagePath>
+      </None>
     </ItemGroup>
 
 </Project>
