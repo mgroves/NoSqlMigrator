@@ -3,6 +3,7 @@
 # NoSqlMigrator
 
 [![CI for NoSqlMigrator](https://github.com/mgroves/NoSqlMigrator/actions/workflows/ci.yml/badge.svg)](https://github.com/mgroves/NoSqlMigrator/actions/workflows/ci.yml)
+[![Nuget](https://img.shields.io/nuget/v/NoSqlMigrator)](https://www.nuget.org/packages/NoSqlMigrator/)
 
 NoSqlMigrator is a migration framework for .NET, similar to Ruby on Rails Migrations, but heavily inspired by [FluentMigrator](https://github.com/fluentmigrator/fluentmigrator) (though it is NOT a fork or extension to that project).
 Migrations are a structured way to alter your database ~~schema~~ structure/organization and are an alternative to creating lots of scripts that have to be run manually by every developer involved. Migrations solve the problem of evolving a database for multiple instances of that databases (for example, the developer's local database, the test database and the production database). Database changes are described in classes written in C# that can be checked into a version control system.
@@ -13,10 +14,10 @@ Right now this tool ONLY supports Couchbase
 
 # Powered By
 
-* JetBrains Rider
-* Couchbase (.NET SDK)
-* NUnit
-* Oakton
+* [JetBrains Rider](https://www.jetbrains.com/rider/)
+* [Couchbase](https://www.couchbase.com/) ([.NET SDK](https://docs.couchbase.com/dotnet-sdk/current/hello-world/start-using-sdk.html))
+* [NUnit](https://nunit.org/)
+* [Oakton](https://jasperfx.github.io/oakton/)
 
 # How to use it
 
