@@ -1,4 +1,4 @@
-![Image](NoSqlMigrator/logo_wide.png)
+![NoSqlMigrator logo](https://github.com/mgroves/NoSqlMigrator/blob/main/NoSqlMigrator/logo_wide.png?raw=true)
 
 # NoSqlMigrator
 
