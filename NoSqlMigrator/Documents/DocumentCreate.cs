@@ -56,8 +56,14 @@ public class DocumentCreate: IInsertDocumentsScopeSettings, IInsertDocumentsColl
     {
         get
         {
-            _documents = new Dictionary<string, object>();
-            MigrationContext.AddCommands(BuildCommands);
+            // since this command can build up multiple documents
+            // make sure to only create this dictionary once
+            // and only add one command to the context
+            if (_documents == null)
+            {
+                _documents = new Dictionary<string, object>();
+                MigrationContext.AddCommands(BuildCommands);
+            }
             return this;
         }
     }

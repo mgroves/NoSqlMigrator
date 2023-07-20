@@ -183,3 +183,40 @@ public class TestMigration_9 : MigrateBase
             .FromScope("_default");
     }
 }
+
+[Migration(10)]
+public class TestMultipleInsertIntoDocuments : Migrate
+{
+    public override void Up()
+    {
+        Insert.Into
+            .Scope("myScope")
+            .Collection("myCollection1")
+            .Document("foobarbazqux", new
+            {
+                bar = "baz"
+            });
+
+        for (var i = 0; i < 2; i++)
+        {
+            Insert.Into
+                .Scope("myScope")
+                .Collection("myCollection1")
+                .Document<dynamic>(Guid.NewGuid().ToString(), new 
+                {
+                    SoundEffects = new List<dynamic>
+                    {
+                        new { SoundEffectName = "!rimshot"},
+                        new { SoundEffectName = "!badumtss"},
+                        new { SoundEffectName = "!laugh"},
+                        new { SoundEffectName = "!sadtrombone"},
+                    }
+                });
+        }
+    }
+
+    public override void Down()
+    {
+        // don't bother
+    }
+}
