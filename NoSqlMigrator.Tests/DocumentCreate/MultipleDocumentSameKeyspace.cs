@@ -52,7 +52,7 @@ public class MultipleDocumentSameKeyspace
 
 }
 
-[Migration(100)]
+[Migration(1000)]
 public class MultipleDocumentSameKeyspace_Migrate : Migrate
 {
     public static List<string> Keys { get; set; } = new List<string>();

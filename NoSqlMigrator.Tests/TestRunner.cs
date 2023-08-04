@@ -1,4 +1,6 @@
-﻿using Couchbase;
+﻿using System.Reflection;
+using Couchbase;
+using NoSqlMigrator.Infrastructure;
 using NoSqlMigrator.Runner;
 
 namespace NoSqlMigrator.Tests;
@@ -7,14 +9,30 @@ namespace NoSqlMigrator.Tests;
 public class TestRunner
 {
     private ICluster _cluster;
+    private List<Type> _migrationsToTest;
 
     [SetUp]
     public async Task Setup()
     {
         _cluster = await Cluster.ConnectAsync("couchbase://localhost", "Administrator", "password");
         await _cluster.WaitUntilReadyAsync(TimeSpan.FromSeconds(30));
+
+        // only run migrations under 1000 (until I get all of new test structure in place)
+        _migrationsToTest = Assembly.GetAssembly(typeof(TestMigration_1)).GetTypes()
+            .Where(t => !t.IsAbstract)
+            .Where(t => t.IsSubclassOf(typeof(Migrate)))
+            .Where(t => {
+                var migrationAttribute = t.GetCustomAttribute<Migration>();
+                if (migrationAttribute != null)
+                {
+                    return migrationAttribute.MigrationNumber < 1000;
+                }
+                // If the Migration attribute is not present, include the type
+                return true;
+            })
+            .ToList();
     }
-    
+
     [Test]
     public async Task Run_UP_on_test_migrations()
     {
@@ -27,13 +45,13 @@ public class TestRunner
         var coll = await settings.Bucket.DefaultCollectionAsync();
 
         // act
-        await runner.Run(typeof(TestMigration_1).Assembly, settings);
+        await runner.Run(_migrationsToTest, settings);
 
         // assert
         Assert.That((await coll.ExistsAsync("MigrationHistory")).Exists, Is.True);
     }
 
- [Test]
+    [Test]
     public async Task Run_DOWN_on_test_migrations()
     {
         // arrange
@@ -45,7 +63,7 @@ public class TestRunner
         var coll = await settings.Bucket.DefaultCollectionAsync();
 
         // act
-        await runner.Run(typeof(TestMigration_1).Assembly, settings);
+        await runner.Run(_migrationsToTest, settings);
 
         // assert
         Assert.That((await coll.ExistsAsync("MigrationHistory")).Exists, Is.True);

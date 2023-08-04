@@ -84,7 +84,7 @@ public class MultipleDocumentDifferentKeyspaces
     }
 }
 
-[Migration(100)]
+[Migration(1000)]
 public class MultipleDocumentDifferentKeyspaces_Migrate : Migrate
 {
     public static (string, string, string) KeySpace1 { get; set; }
