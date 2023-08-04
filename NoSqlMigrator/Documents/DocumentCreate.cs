@@ -2,6 +2,11 @@
 
 namespace NoSqlMigrator.Documents;
 
+public interface IInsertDocumentInitial
+{
+    IInsertDocumentsScopeSettings Into { get; }
+}
+
 public interface IInsertDocumentsScopeSettings
 {
     /// <summary>
@@ -43,10 +48,18 @@ public interface IInsertDocumentsBuild
     IInsertDocumentsBuild Document<T>(string key, T document);
 }
 
-public class DocumentCreate: IInsertDocumentsScopeSettings, IInsertDocumentsCollectionSettings, IInsertDocumentsBuild, IBuildCommands
+public class KeySpaceAndDocument
+{
+    public string ScopeName { get; set; }
+    public string CollectionName { get; set; }
+    public string Key { get; set; }
+    public object Document { get; set; }
+}
+
+public class DocumentCreate: IInsertDocumentInitial, IInsertDocumentsScopeSettings, IInsertDocumentsCollectionSettings, IInsertDocumentsBuild, IBuildCommands
 {
     private string _collectionName;
-    private Dictionary<string, object> _documents;
+    private List<KeySpaceAndDocument> _documents;
     private string _scopeName;
 
     /// <summary>
@@ -61,7 +74,7 @@ public class DocumentCreate: IInsertDocumentsScopeSettings, IInsertDocumentsColl
             // and only add one command to the context
             if (_documents == null)
             {
-                _documents = new Dictionary<string, object>();
+                _documents = new List<KeySpaceAndDocument>();
                 MigrationContext.AddCommands(BuildCommands);
             }
             return this;
@@ -72,19 +85,19 @@ public class DocumentCreate: IInsertDocumentsScopeSettings, IInsertDocumentsColl
     {
         return new List<IMigrateCommand>
         {
-            new DocumentCreateCommand(_scopeName, _collectionName, _documents)
+            new DocumentCreateCommand(_documents)
         };
     }
 
     public IInsertDocumentsBuild Document(string key, dynamic document)
     {
-        _documents.Add(key, document);
+        _documents.Add(new KeySpaceAndDocument { ScopeName = _scopeName, CollectionName = _collectionName, Key = key, Document = document});
         return this;
     }
 
     public IInsertDocumentsBuild Document<T>(string key, T document)
     {
-        _documents.Add(key, document);
+        _documents.Add(new KeySpaceAndDocument { ScopeName = _scopeName, CollectionName = _collectionName, Key = key, Document = document });
         return this;
     }
 

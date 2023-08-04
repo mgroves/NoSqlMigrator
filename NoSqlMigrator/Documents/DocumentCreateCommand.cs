@@ -5,33 +5,35 @@ namespace NoSqlMigrator.Documents;
 
 internal class DocumentCreateCommand : IMigrateCommand
 {
-    private readonly string _scopeName;
-    private readonly string _collectionName;
-    private readonly Dictionary<string, object> _documents;
+    private readonly List<KeySpaceAndDocument> _documents;
 
-    public DocumentCreateCommand(string scopeName, string collectionName, Dictionary<string, object> documents)
+    public DocumentCreateCommand(List<KeySpaceAndDocument> documents)
     {
-        _scopeName = scopeName;
-        _collectionName = collectionName;
         _documents = documents;
     }
 
     public async Task Execute(IBucket bucket)
     {
-        var scope = await bucket.ScopeAsync(_scopeName);
-        var coll = await scope.CollectionAsync(_collectionName);
         foreach (var doc in _documents)
         {
-            await coll.InsertAsync(doc.Key, doc.Value);
+            var scope = await bucket.ScopeAsync(doc.ScopeName);
+            var coll = await scope.CollectionAsync(doc.CollectionName);
+            await coll.InsertAsync(doc.Key, doc.Document);
         }
     }
 
     public bool IsValid(List<string> errorMessages)
     {
         var isValid = true;
-        if (string.IsNullOrEmpty(_collectionName))
+        if (_documents.Any(d => string.IsNullOrEmpty(d.ScopeName)))
         {
-            errorMessages.Add("Collection name must be specified");
+            errorMessages.Add("Scope name(s) must be specified");
+            isValid = false;
+        }
+
+        if (_documents.Any(d => string.IsNullOrEmpty(d.CollectionName)))
+        {
+            errorMessages.Add("Collection name(s) must be specified");
             isValid = false;
         }
 

@@ -11,8 +11,6 @@ public class TestRunner
     [SetUp]
     public async Task Setup()
     {
-        // todo: change this to use test containers!
-
         _cluster = await Cluster.ConnectAsync("couchbase://localhost", "Administrator", "password");
         await _cluster.WaitUntilReadyAsync(TimeSpan.FromSeconds(30));
     }
@@ -35,13 +33,7 @@ public class TestRunner
         Assert.That((await coll.ExistsAsync("MigrationHistory")).Exists, Is.True);
     }
 
-    [Test]
-    public async Task Fail()
-    {
-        Assert.Fail();
-    }
-
-    [Test]
+ [Test]
     public async Task Run_DOWN_on_test_migrations()
     {
         // arrange
