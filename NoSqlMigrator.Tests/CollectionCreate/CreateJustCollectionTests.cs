@@ -19,7 +19,9 @@ public class CreateJustCollectionTests : MigrationTestBase<CreateOnlyCollection_
         CreateOnlyCollection_Migrate.CollectionName = _random.String(10);
 
         // act / assert
-        var ex = Assert.ThrowsAsync<Exception>(async () => await RunUp());
+        var ex = Assert.ThrowsAsync<Exception>(async () => 
+            await RunUp()
+        );
         Assert.That(ex.Message.Contains("Invalid migration"));
         Assert.That(ex.Message.Contains("Scope name must be specified"));
     }

@@ -35,6 +35,8 @@ public abstract class MigrationTestBase<T> where T : Migrate
     public async Task Cleanup()
     {
         await RunDown();
+
+        await _cluster.DisposeAsync();
     }
 
     protected async Task RunUp()

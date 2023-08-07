@@ -17,6 +17,9 @@ internal static class MigrationContext
             {
                 if (!action.IsValid(errorMessages))
                 {
+                    MigrationContext.Clear(); // clear context for next migration, just in case (automated testing, for instance)
+                                              // I'd really like to not use a static like MigrationContext
+                                              // but not sure how to do it (there must be a way)
                     throw new Exception($"Invalid migration in \"{_migrationName}\": {string.Join(",", errorMessages)}");
                 }
                 await action.Execute(bucket);
