@@ -1,7 +1,7 @@
 ﻿using NoSqlMigrator.Infrastructure;
 using NoSqlMigrator.Runner;
 
-namespace NoSqlMigrator.Tests.DocumentCreate;
+namespace NoSqlMigrator.Tests.Documents;
 
 public class MultipleDocumentSameKeyspace : MigrationTestBase<MultipleDocumentSameKeyspace_Migrate>
 {

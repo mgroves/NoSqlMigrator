@@ -1,9 +1,8 @@
 ﻿using Couchbase.Management.Collections;
-using NoSqlMigrator.Runner;
 using NoSqlMigrator.Infrastructure;
 using NoSqlMigrator.Tests.Helpers;
 
-namespace NoSqlMigrator.Tests.DocumentCreate;
+namespace NoSqlMigrator.Tests.Documents;
 
 [TestFixture]
 public class MultipleDocumentDifferentKeyspaces : MigrationTestBase<MultipleDocumentDifferentKeyspaces_Migrate>
