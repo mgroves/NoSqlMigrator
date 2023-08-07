@@ -112,7 +112,24 @@ public interface IIndexCreateFieldSettings
     /// </summary>
     /// <returns></returns>
     IIndexCreateCollection Descending();
-    
+
+    /// <summary>
+    /// Field(s) to include in the index.
+    /// At least one field is required in an index.
+    /// </summary>
+    /// <param name="fieldName">Field name</param>
+    /// <returns></returns>
+    IIndexCreateFieldSettings OnField(string fieldName);
+
+    /// <summary>
+    /// Raw field(s) to include in the index. Use this when
+    /// specifying a complex index, like an array index, adaptive index, etc 
+    /// At least one field is required in an index.
+    /// </summary>
+    /// <param name="rawField">Raw field</param>
+    /// <returns></returns>
+    IIndexCreateCollection OnFieldRaw(string rawField);
+
     /// <summary>
     /// Add WHERE clause to index
     /// </summary>

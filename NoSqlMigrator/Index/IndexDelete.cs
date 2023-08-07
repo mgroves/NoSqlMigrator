@@ -8,8 +8,11 @@ public interface IIndexDelete
     /// Scope to delete an index from (required)
     /// </summary>
     /// <param name="scopeName">Scope name</param>
-    /// <returns></returns>
     IIndexDeleteScope FromScope(string scopeName);
+    /// <summary>
+    /// Delete from _default scope
+    /// </summary>
+    IIndexDeleteScope FromDefaultScope();
 }
 
 public interface IIndexDeleteScope
@@ -18,8 +21,11 @@ public interface IIndexDeleteScope
     /// Collection to delete an index from (required)
     /// </summary>
     /// <param name="collectionName">Collection name</param>
-    /// <returns></returns>
     IIndexDeleteCollection FromCollection(string collectionName);
+    /// <summary>
+    /// Delete from _default collection
+    /// </summary>
+    IIndexDeleteCollection FromDefaultCollection();
 }
 
 public interface IIndexDeleteCollection
@@ -44,10 +50,21 @@ internal class IndexDelete : IIndexDelete, IIndexDeleteScope, IIndexDeleteCollec
         _scopeName = scopeName;
         return this;
     }
+    public IIndexDeleteScope FromDefaultScope()
+    {
+        _scopeName = "_default";
+        return this;
+    }
 
     public IIndexDeleteCollection FromCollection(string collectionName)
     {
         _collectionName = collectionName;
+        return this;
+    } 
+    
+    public IIndexDeleteCollection FromDefaultCollection()
+    {
+        _collectionName = "_default";
         return this;
     }
     
