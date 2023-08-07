@@ -1,15 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoSqlMigrator", "NoSqlMigrator\NoSqlMigrator.csproj", "{48B33A93-1A4D-4458-8D69-5736606A78C2}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.6.33815.320
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NoSqlMigrator", "NoSqlMigrator\NoSqlMigrator.csproj", "{48B33A93-1A4D-4458-8D69-5736606A78C2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoSqlMigrator.Tests", "NoSqlMigrator.Tests\NoSqlMigrator.Tests.csproj", "{FFA55C1E-5602-4255-ACFD-432B362F2B3C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NoSqlMigrator.Tests", "NoSqlMigrator.Tests\NoSqlMigrator.Tests.csproj", "{FFA55C1E-5602-4255-ACFD-432B362F2B3C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NoSqlMigrator.Runner", "NoSqlMigrator.Runner\NoSqlMigrator.Runner.csproj", "{AB95C30B-6DDE-4200-ADA2-222A3D64EDC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NoSqlMigrator.Runner", "NoSqlMigrator.Runner\NoSqlMigrator.Runner.csproj", "{AB95C30B-6DDE-4200-ADA2-222A3D64EDC8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Information", "Information", "{217AD94D-4F33-489D-91E9-C48CD37C06C2}"
 	ProjectSection(SolutionItems) = preProject
 		LICENSE = LICENSE
 		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FF5DA4EC-9161-41F3-B609-339EA00BA2E4}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\ci.yml = .github\workflows\ci.yml
 	EndProjectSection
 EndProject
 Global
@@ -30,5 +38,8 @@ Global
 		{AB95C30B-6DDE-4200-ADA2-222A3D64EDC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB95C30B-6DDE-4200-ADA2-222A3D64EDC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB95C30B-6DDE-4200-ADA2-222A3D64EDC8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

@@ -101,7 +101,4 @@ jobs:
       run: dotnet build --no-restore
 
     - name: Test UP migrations
-      run: dotnet test --verbosity normal --filter NoSqlMigrator.Tests.TestRunner.Run_UP_on_test_migrations
-
-    - name: Test DOWN migrations
-      run: dotnet test --verbosity normal --filter NoSqlMigrator.Tests.TestRunner.Run_DOWN_on_test_migrations
+      run: dotnet test --verbosity normal
