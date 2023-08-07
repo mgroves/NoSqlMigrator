@@ -1,4 +1,5 @@
 ﻿using Couchbase;
+using Couchbase.Query;
 using NoSqlMigrator.Infrastructure;
 
 namespace NoSqlMigrator.Execute;
@@ -14,7 +15,10 @@ internal class ScriptRunCommand : IMigrateCommand
 
     public async Task Execute(IBucket bucket)
     {
-        await bucket.Cluster.QueryAsync<dynamic>(_sql);
+        await bucket.Cluster.QueryAsync<dynamic>(_sql, options =>
+        {
+            options.ScanConsistency(QueryScanConsistency.RequestPlus);
+        });
     }
 
     public bool IsValid(List<string> errorMessages)
