@@ -1,4 +1,4 @@
-![NoSqlMigrator logo](https://user-images.githubusercontent.com/103484/253677010-ea65d4b0-1c7c-4aae-8cf7-970067ec02be.png)
+![nosqlmigrator](https://github.com/michaelmuthomi/NoSqlMigrator/assets/108736931/08180ba6-2d51-4648-9dce-76b0e34b2867)
 
 # NoSqlMigrator
 
