@@ -2,7 +2,7 @@
 using NoSqlMigrator.Infrastructure;
 using NoSqlMigrator.Tests.Helpers;
 
-namespace NoSqlMigrator.Tests.CollectionCreate;
+namespace NoSqlMigrator.Tests.ScopeCreate;
 
 [TestFixture]
 public class CreateJustScopeTests : MigrationTestBase<CreateOnlyScope_Migrate>

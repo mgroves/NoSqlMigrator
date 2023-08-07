@@ -4,7 +4,7 @@ using NoSqlMigrator.Tests.Helpers;
 namespace NoSqlMigrator.Tests.CollectionCreate;
 
 [TestFixture]
-public class CreateJustCollectionTests : MigrationTestBase<CreateOnlyCollection_Migrate>
+public class CreateCollectionNoScopeSpecifiedTests : MigrationTestBase<CreateCollectionNoScopeSpecified_Migrate>
 {
     [SetUp]
     public override async Task Setup()
@@ -16,7 +16,7 @@ public class CreateJustCollectionTests : MigrationTestBase<CreateOnlyCollection_
     public async Task ShouldThrowExceptionMustSpecifyScope()
     {
         // arrange
-        CreateOnlyCollection_Migrate.CollectionName = _random.String(10);
+        CreateCollectionNoScopeSpecified_Migrate.CollectionName = _random.String(10);
 
         // act / assert
         var ex = Assert.ThrowsAsync<Exception>(async () => 
@@ -28,7 +28,7 @@ public class CreateJustCollectionTests : MigrationTestBase<CreateOnlyCollection_
 }
 
 [Migration(1000)]
-public class CreateOnlyCollection_Migrate : Migrate
+public class CreateCollectionNoScopeSpecified_Migrate : Migrate
 {
     public static string CollectionName { get; set; }
 

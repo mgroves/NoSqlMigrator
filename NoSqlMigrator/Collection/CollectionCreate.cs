@@ -11,6 +11,8 @@ public interface ICollectionCreateSettings
     /// <param name="scopeName">Scope Name</param>
     /// <returns></returns>
     ICollectionCreateSettings InScope(string scopeName);
+
+    ICollectionCreateSettings InDefaultScope();
 }
 
 internal class CollectionCreate : ICollectionCreateSettings, IBuildCommands
@@ -27,6 +29,12 @@ internal class CollectionCreate : ICollectionCreateSettings, IBuildCommands
     public ICollectionCreateSettings InScope(string scopeName)
     {
         _scopeName = scopeName;
+        return this;
+    }
+
+    public ICollectionCreateSettings InDefaultScope()
+    {
+        _scopeName = "_default";
         return this;
     }
 
