@@ -90,9 +90,6 @@ jobs:
         -d 'storageMode=memory_optimized'
 
         sleep 5
-        curl -v http://localhost:8093/query/service \
-        -u Administrator:password \
-        -d "statement=CREATE PRIMARY INDEX default_profile_index ON user_profile._default.profile" 
 
         echo "**Creating CB Server Info**" 
         curl  -u Administrator:password -v -X GET http://localhost:8091/pools/default | jq '.' | grep hostname
