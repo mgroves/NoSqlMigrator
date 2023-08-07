@@ -24,6 +24,7 @@
 
     <ItemGroup>
       <Folder Include="Collection\" />
+      <Folder Include="Extensions\" />
     </ItemGroup>
 
     <ItemGroup>

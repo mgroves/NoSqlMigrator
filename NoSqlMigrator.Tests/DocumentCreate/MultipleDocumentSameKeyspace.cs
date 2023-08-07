@@ -1,26 +1,15 @@
-﻿using Couchbase;
-using Couchbase.KeyValue;
-using NoSqlMigrator.Infrastructure;
+﻿using NoSqlMigrator.Infrastructure;
 using NoSqlMigrator.Runner;
 
 namespace NoSqlMigrator.Tests.DocumentCreate;
 
-public class MultipleDocumentSameKeyspace
+public class MultipleDocumentSameKeyspace : MigrationTestBase<MultipleDocumentSameKeyspace_Migrate>
 {
-    private ICluster _cluster;
-    private MigrationRunner _runner;
-    private RunSettings _settings;
-    private ICouchbaseCollection _collection;
-
     [SetUp]
-    public async Task Setup()
+    public override async Task Setup()
     {
-        _cluster = await Cluster.ConnectAsync("couchbase://localhost", "Administrator", "password");
-        await _cluster.WaitUntilReadyAsync(TimeSpan.FromSeconds(30));
+        await base.Setup();
 
-        _runner = new MigrationRunner();
-        _settings = new RunSettings();
-        _settings.Bucket = await _cluster.BucketAsync("testmigrator");
         _collection = await _settings.Bucket.DefaultCollectionAsync();
     }
 
@@ -37,19 +26,14 @@ public class MultipleDocumentSameKeyspace
         };
 
         // act
-        await _runner.Run(new List<Type> { typeof(MultipleDocumentSameKeyspace_Migrate) }, _settings);
+        await RunUp();
 
         // assert
         var exists1 = await _collection.ExistsAsync(dockey1);
         var exists2 = await _collection.ExistsAsync(dockey2);
         Assert.That(exists1.Exists, Is.EqualTo(true));
         Assert.That(exists2.Exists, Is.EqualTo(true));
-
-        // cleanup
-        _settings.Direction = DirectionEnum.Down;
-        await _runner.Run(new List<Type> { typeof(MultipleDocumentSameKeyspace_Migrate) }, _settings);
     }
-
 }
 
 [Migration(1000)]
