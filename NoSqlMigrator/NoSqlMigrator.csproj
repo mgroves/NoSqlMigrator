@@ -16,7 +16,12 @@
         <RepositoryUrl>https://github.com/mgroves/NoSqlMigrator</RepositoryUrl>
         <PackageTags>Couchbase;NoSQL;migration;database;fluent</PackageTags>
         <Copyright>Copyright 2022-Present © Matthew D. Groves and contributors</Copyright>
+        <ApplicationIcon>logo.ico</ApplicationIcon>
     </PropertyGroup>
+
+    <ItemGroup>
+      <Content Include="logo.ico" />
+    </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="CouchbaseNetClient" Version="3.4.8" />

@@ -1,6 +1,4 @@
-<p align="center">
-    <img src="Logo/nosqlmigrator.png" alt="Logo">
-</p>
+![NoSqlMigrator logo](https://raw.githubusercontent.com/mgroves/NoSqlMigrator/main/Logo/nosqlmigrator.png)
 
 # NoSqlMigrator
 
