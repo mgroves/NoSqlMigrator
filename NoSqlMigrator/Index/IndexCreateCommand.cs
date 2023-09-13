@@ -1,9 +1,7 @@
-﻿using System.Diagnostics.Metrics;
-using System.Text;
+﻿using System.Text;
 using Couchbase;
 using NoSqlMigrator.Infrastructure;
 using Polly;
-using static Couchbase.Core.Diagnostics.Tracing.OuterRequestSpans.ManagerSpan;
 
 namespace NoSqlMigrator.Index;
 
@@ -90,14 +88,15 @@ internal class IndexCreateCommand : IMigrateCommand
         var cluster = bucket.Cluster;
 
         // execute query, retry if necessary
-        var verifyQuery = await VerifyCreateIndex(cluster, sqlIndex);
+        var verifyQuery = await VerifyCreateIndex(bucket, sqlIndex);
 
         if (!verifyQuery)
             throw new Exception($"Unable to create index `{_indexName}`");
     }
 
-    private async Task<bool> VerifyCreateIndex(ICluster cluster, string sqlIndex)
+    private async Task<bool> VerifyCreateIndex(IBucket bucket, string sqlIndex)
     {
+        var cluster = bucket.Cluster;
         var policy = Policy
             .Handle<Exception>()
             .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
@@ -120,6 +119,11 @@ internal class IndexCreateCommand : IMigrateCommand
             Console.WriteLine("The last retry failed, setting result to false");
             result = false;
         }
+
+        // watch index until it builds
+        var queryIndexManager = cluster.QueryIndexes;
+        await queryIndexManager.WatchIndexesAsync(bucket.Name, new List<string> { _indexName });
+
         return result;
     }
 
@@ -127,7 +131,8 @@ internal class IndexCreateCommand : IMigrateCommand
     /// verify collection exists/is ready
     /// this policy will retry 5 times, with an exponential backoff wait
     /// after each attempt
-    /// until collection is found (or retry limit exceeded)    /// </summary>
+    /// until collection is found (or retry limit exceeded)
+    /// </summary>
     /// <returns></returns>
     private async Task<bool> VerifyCollectionCreation(IBucket bucket)
     {
