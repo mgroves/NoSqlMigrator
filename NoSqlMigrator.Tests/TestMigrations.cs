@@ -47,7 +47,6 @@ public class TestMigration_3 : Migrate
             .Where("geo.alt > 1000")
             .UsingGsi()
             .WithNodes("127.0.0.1:8091")
-            .WithDeferBuild()
             .WithNumReplicas(0);
     }
 

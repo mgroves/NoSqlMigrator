@@ -3,6 +3,7 @@ using Couchbase;
 using Couchbase.Management.Query;
 using NoSqlMigrator.Infrastructure;
 using Polly;
+using static Couchbase.Core.Diagnostics.Tracing.OuterRequestSpans.ManagerSpan;
 
 namespace NoSqlMigrator.Index;
 
@@ -61,39 +62,30 @@ internal class PrimaryIndexCreateCommand : IMigrateCommand
             sqlIndex += "}";
         }
         
-        var cluster = bucket.Cluster;
         // execute query, retry if necessary
-        var verifyQuery = await VerifyCreateIndex(cluster, sqlIndex);
+        var verifyQuery = await VerifyCreateIndex(bucket, sqlIndex);
 
         if (!verifyQuery)
             throw new Exception($"Unable to create primary index on `{_collectionName}` collection");
     }
 
-    private async Task<bool> VerifyCreateIndex(ICluster cluster, string sqlIndex)
+    private async Task<bool> VerifyCreateIndex(IBucket bucket, string sqlIndex)
     {
-        var policy = Policy
-            .Handle<Exception>()
-            .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-                async (result, timeSpan, retryCount, context) =>
-                {
-                    Console.WriteLine("Retry attempt: " + retryCount + ", Retrying in " + timeSpan.TotalSeconds +
-                                      " seconds.");
-                });
-        var result = false;
-        try
+        var cluster = bucket.Cluster;
+
+        await cluster.QueryAsync<dynamic>(sqlIndex);
+
+        // if deferred, don't verify
+        if (_deferBuild)
+            return true;
+
+        // watch until index is created
+        var queryIndexManager = cluster.QueryIndexes;
+        await queryIndexManager.WatchIndexesAsync(bucket.Name, new List<string> { "#primary" }, options =>
         {
-            await policy.ExecuteAsync(async () =>
-            {
-                await cluster.QueryAsync<dynamic>(sqlIndex);
-                result = true;
-            });
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("The last retry failed, setting result to false");
-            result = false;
-        }
-        return result;
+            options.WatchPrimary(true);
+        });
+        return true;
     }
 
     /// <summary>

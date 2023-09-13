@@ -85,8 +85,6 @@ internal class IndexCreateCommand : IMigrateCommand
             sqlIndex += "}";
         }
         
-        var cluster = bucket.Cluster;
-
         // execute query, retry if necessary
         var verifyQuery = await VerifyCreateIndex(bucket, sqlIndex);
 
@@ -97,34 +95,18 @@ internal class IndexCreateCommand : IMigrateCommand
     private async Task<bool> VerifyCreateIndex(IBucket bucket, string sqlIndex)
     {
         var cluster = bucket.Cluster;
-        var policy = Policy
-            .Handle<Exception>()
-            .WaitAndRetryAsync(5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-                async (result, timeSpan, retryCount, context) =>
-                {
-                    Console.WriteLine("Retry attempt: " + retryCount + ", Retrying in " + timeSpan.TotalSeconds +
-                                      " seconds.");
-                });
-        var result = false;
-        try
-        {
-            await policy.ExecuteAsync(async () =>
-            {
-                await cluster.QueryAsync<dynamic>(sqlIndex);
-                result = true;
-            });
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine("The last retry failed, setting result to false");
-            result = false;
-        }
+
+        await cluster.QueryAsync<dynamic>(sqlIndex);
 
         // watch index until it builds
+        // unless deferred
+        if (_deferBuild)
+            return true;
+
         var queryIndexManager = cluster.QueryIndexes;
         await queryIndexManager.WatchIndexesAsync(bucket.Name, new List<string> { _indexName });
 
-        return result;
+        return true;
     }
 
     /// <summary>
